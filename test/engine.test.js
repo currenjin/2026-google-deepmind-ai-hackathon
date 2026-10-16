@@ -110,6 +110,34 @@ test('excluded rules are not executed', () => {
   const model = syntheticModels.complete;
   const included = new Set(model.rules.concat(model.prohibitions).map((r) => r.id).filter((id) => id !== 'R1'));
   const res = evaluate({ model, included, state: initialState(model), settings: {}, actor: { roles: ['requester'], relations: {} }, action: 'submit', inputs: { units: 80 } });
-  assert.equal(res.classification, 'needs_clarification');
   assert.equal(res.state.status, 'draft');
+});
+
+test('R2 rules that set different variables merge instead of conflicting', () => {
+  const m = structuredClone(syntheticModels.complete);
+  m.variables.push({ id: 'audit', values: ['none', 'logged'], initial: 'none' });
+  m.rules.push({ id: 'R3-audit', action: 'approve', roles: ['reviewer'], when: [{ var: 'status', op: 'eq', value: 'pending' }], effect: { audit: 'logged' }, quote: 'x' });
+  m.rules.push({ id: 'R3-dup', action: 'approve', roles: ['reviewer'], when: [{ var: 'status', op: 'eq', value: 'pending' }, { input: 'units', op: 'lte', value: 100 }], effect: { status: 'approved' }, quote: 'x' });
+  const res = evaluate({ model: m, state: initialState(m, { status: 'pending' }), settings: {}, actor: { roles: ['reviewer'], relations: {} }, action: 'approve', inputs: { units: 80 } });
+  assert.equal(res.classification, 'defined');
+  assert.equal(res.state.status, 'approved');
+  assert.equal(res.state.audit, 'logged');
+});
+
+test('R2 G06-style result reports which variables the rule did not decide', () => {
+  const res = evaluate({
+    model: githubModel, state: initialState(githubModel), actor: { roles: ['admin'], relations: {} }, action: 'bypass',
+    settings: { prevent_self_review: true, allow_admin_bypass: true, other_rules_passed: true },
+  });
+  assert.equal(res.classification, 'defined');
+  assert.ok(res.undecided.includes('environment_secrets_eligible'));
+  assert.ok(res.undecided.includes('review_decision'));
+});
+
+test('R3 excluding a rule is a review state, not a document gap', () => {
+  const model = syntheticModels.complete;
+  const included = new Set(model.rules.concat(model.prohibitions).map((r) => r.id).filter((id) => id !== 'R1'));
+  const res = evaluate({ model, included, state: initialState(model), settings: {}, actor: { roles: ['requester'], relations: {} }, action: 'submit', inputs: { units: 80 } });
+  assert.equal(res.classification, 'excluded_by_review');
+  assert.equal(res.label, null);
 });

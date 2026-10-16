@@ -6,6 +6,10 @@
 //   needs_clarification  -> "Needs decision"     (no rule decides, rule outcome unspecified, or conflict)
 //   unsupported          -> "Out of scope"
 //   invalid_input        -> input validation message, not a business outcome
+//   excluded_by_review   -> a person excluded the rules for this action; not a document gap
+//
+// Matching: an item applies only if its guard holds AND the actor holds one of its roles.
+// Effects are partial maps; they merge, and only different values for the same variable conflict.
 
 export const LABELS = {
   defined: 'Defined',
@@ -13,6 +17,7 @@ export const LABELS = {
   needs_clarification: 'Needs decision',
   unsupported: 'Out of scope',
   invalid_input: null,
+  excluded_by_review: null,
 };
 
 export function initialState(model, overrides = {}) {
@@ -57,9 +62,17 @@ function allHold(conds, ctx) {
   return (conds || []).every((c) => condHolds(c, ctx));
 }
 
-function effectKey(effect) {
-  if (effect === null || effect === undefined) return 'null';
-  return JSON.stringify(Object.keys(effect).sort().map((k) => [k, effect[k]]));
+// Merge partial effects. Only different values for the same variable are a conflict.
+function mergeEffects(rules) {
+  const merged = {};
+  const conflicts = new Set();
+  for (const r of rules) {
+    for (const [k, v] of Object.entries(r.effect)) {
+      if (k in merged && merged[k] !== v) conflicts.add(k);
+      else merged[k] = v;
+    }
+  }
+  return { merged, conflicts: [...conflicts] };
 }
 
 function validateInputs(model, inputs) {
@@ -104,25 +117,32 @@ export function evaluate({ model, included, state, settings, actor, action, inpu
     if (others.length > 0) {
       return { classification: 'forbidden', label: LABELS.forbidden, reason: 'role', state: before, changed: false, evidence: others };
     }
-    // Rules exist for this action but none covers this state/input, or none exist at all.
+    // A person excluded extracted items for this action: that is a review state, not a document gap.
+    const excluded = [...(model.rules || []), ...(model.prohibitions || [])].filter((r) => r.action === action && !keep(r));
+    if (excluded.length > 0) {
+      return { classification: 'excluded_by_review', label: null, state: before, changed: false, evidence: excluded };
+    }
+    // Reviewed rules exist for this action but none covers this state/input, or none exist at all.
     return {
       classification: 'needs_clarification', label: LABELS.needs_clarification, reason: 'no_rule',
       state: before, changed: false, evidence: rules,
     };
   }
 
-  const distinct = new Map();
-  for (const r of mine) distinct.set(effectKey(r.effect), r);
-  if (distinct.size > 1) {
-    return { classification: 'needs_clarification', label: LABELS.needs_clarification, reason: 'conflict', state: before, changed: false, evidence: mine };
+  const unspecified = mine.filter((r) => r.effect === null || r.effect === undefined);
+  const specified = mine.filter((r) => r.effect);
+  if (specified.length === 0) {
+    return { classification: 'needs_clarification', label: LABELS.needs_clarification, reason: 'unspecified_outcome', state: before, changed: false, evidence: unspecified };
   }
 
-  const rule = mine[0];
-  if (rule.effect === null || rule.effect === undefined) {
-    return { classification: 'needs_clarification', label: LABELS.needs_clarification, reason: 'unspecified_outcome', state: before, changed: false, evidence: [rule] };
+  const { merged, conflicts } = mergeEffects(specified);
+  if (conflicts.length > 0) {
+    const involved = specified.filter((r) => conflicts.some((k) => k in r.effect));
+    return { classification: 'needs_clarification', label: LABELS.needs_clarification, reason: 'conflict', conflicts, state: before, changed: false, evidence: involved };
   }
 
-  const after = { ...before, ...rule.effect };
-  const changed = Object.keys(rule.effect).some((k) => before[k] !== after[k]);
-  return { classification: 'defined', label: LABELS.defined, state: after, changed, evidence: mine };
+  const after = { ...before, ...merged };
+  const changed = Object.keys(merged).some((k) => before[k] !== after[k]);
+  const undecided = Object.keys(before).filter((k) => !(k in merged));
+  return { classification: 'defined', label: LABELS.defined, state: after, changed, decided: Object.keys(merged), undecided, evidence: specified };
 }

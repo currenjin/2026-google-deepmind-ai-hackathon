@@ -109,17 +109,18 @@ async function runExtract(useRecorded) {
   go('verify');
   const timer = setInterval(() => { if (S.step === 'verify' && S.loading) render(); }, 1000);
   const forHash = S.doc.hash;
+  const reqId = (S.reqId = (S.reqId || 0) + 1);
   try {
     const r = await fetch('/api/extract', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ text: S.doc.text, useRecorded }) });
     const data = await r.json();
-    if (forHash !== S.doc.hash) return; // stale response for an older document
+    if (forHash !== S.doc.hash || reqId !== S.reqId) return; // stale response
     S.extraction = data;
     if (data.status === 'passed') setupReview(data.model);
   } catch (err) {
     if (forHash === S.doc.hash) S.extraction = { status: 'infra_error', message: `Network error: ${err.message}`, attempts: [] };
   } finally {
     clearInterval(timer);
-    if (forHash === S.doc.hash) { S.loading = null; render(); }
+    if (forHash === S.doc.hash && reqId === S.reqId) { S.loading = null; render(); }
   }
 }
 
@@ -209,13 +210,14 @@ function viewVerify() {
               <div class="seg"><button class="${S.included.has(r.id) ? 'on' : ''}" data-inc="${esc(r.id)}">Include</button><button class="${S.included.has(r.id) ? '' : 'on'}" data-exc="${esc(r.id)}">Exclude</button></div>
             </div>`).join('')}
         </div>
-        <div class="foot"><span class="faint" style="font-size:15px">Code checked the quotes. You check the meaning.</span><button class="btn primary" id="startreplay" ${runnable ? '' : 'disabled'}>Start replay</button></div>
+        <div class="foot"><span class="faint" style="font-size:15px">Code checked the quotes. You check the meaning. If a rule reads wrong, re-extract instead of replaying it.</span><span style="display:flex;gap:10px"><button class="btn" id="reextract">Re-extract</button><button class="btn primary" id="startreplay" ${runnable ? '' : 'disabled'}>Start replay</button></span></div>
       </section>
     </div>`;
 }
 
 function bindVerify() {
   document.getElementById('retry')?.addEventListener('click', () => runExtract(false));
+  document.getElementById('reextract')?.addEventListener('click', () => { if (confirm('Discard this extraction and your review, then ask Gemini 4 Argon again?')) runExtract(false); });
   $view.querySelectorAll('[data-inc]').forEach((b) => b.addEventListener('click', () => { S.included.add(b.dataset.inc); S.state = null; render(); }));
   $view.querySelectorAll('[data-exc]').forEach((b) => b.addEventListener('click', () => { S.included.delete(b.dataset.exc); S.state = null; render(); }));
   $view.querySelectorAll('[data-line]').forEach((a) => a.addEventListener('click', (e) => {
@@ -253,7 +255,9 @@ function startReplay() {
 
 function resetPath() {
   const m = S.extraction.model;
+  S.runId = `run-${Date.now().toString(36)}`;
   S.state = initialState(m, S.start);
+  S.runStart = { state: { ...S.state }, settings: { ...S.settings }, people: structuredClone(S.people), inputs: { ...S.inputs } };
   S.path = [];
   S.last = null;
   S.draft = null;
@@ -280,7 +284,8 @@ function headline(m, res, actor, action) {
   switch (res.classification) {
     case 'defined': {
       const ch = Object.keys(res.state).filter((k) => res.state[k] !== S.state[k]).map((k) => `${label(m.variables, k)} is now ${pretty(res.state[k]).toLowerCase()}`);
-      return [`${actor.id} · ${a}: ${ch.length ? ch.join(', ') : 'no visible change'}.`, 'The document defines this outcome.'];
+      const open = (res.undecided || []).map((k) => label(m.variables, k));
+      return [`${actor.id} · ${a}: ${ch.length ? ch.join(', ') : 'no visible change'}.`, `The document defines this outcome.${open.length ? ` This rule says nothing about ${open.join(', ')}; those values are just unchanged.` : ''}`];
     }
     case 'forbidden':
       if (res.reason === 'role') {
@@ -294,6 +299,8 @@ function headline(m, res, actor, action) {
       return ['The document doesn’t say what happens here.', 'Nothing changed. No rule covers this state, person and input. We stopped instead of guessing.'];
     case 'unsupported':
       return ['This action is outside what the replay supports.', 'Nothing was executed.'];
+    case 'excluded_by_review':
+      return ['You excluded the rules for this action.', 'Nothing was executed. This is your review choice, not a gap in the document. Include the rule or re-extract on Verify.'];
     case 'invalid_input':
       return [res.message, 'Fix the input. Nothing was executed.'];
     default:
@@ -320,12 +327,13 @@ function act(action) {
 }
 
 const TAGCLASS = { defined: 'defined', forbidden: 'blocked', needs_clarification: 'decision', unsupported: 'scope' };
+const NOLABEL = { invalid_input: 'Input check', excluded_by_review: 'Your review', setup: 'Changed by you' };
 
 function viewResult() {
   const r = S.last;
   if (!r) return `<article class="result"><div class="empty">Choose who is acting, then press one of the document’s buttons.</div></article>`;
-  const tag = r.label ? `<span class="tag ${TAGCLASS[r.classification]}">${esc(r.label)}</span>` : '<span class="tag scope">Input check</span>';
-  const quotes = r.evidence.slice(0, 3).map((e) => `<p class="quote">${esc(e.quote)}</p><div class="cite">line ${esc(e.line)} · quote verified</div>`).join('');
+  const tag = r.label ? `<span class="tag ${TAGCLASS[r.classification]}">${esc(r.label)}</span>` : `<span class="tag scope">${NOLABEL[r.classification] || 'Note'}</span>`;
+  const quotes = r.evidence.slice(0, 3).map((e) => `<p class="quote">${esc(e.quote)}</p><div class="cite">document line ${esc(e.line)} · quote verified</div>`).join('');
   let draft = '';
   if (r.classification === 'needs_clarification') {
     if (!S.draft) draft = `<button class="btn primary" id="draftq">Draft a question</button>`;
@@ -348,7 +356,7 @@ function viewReplay() {
         ${m.roles.map((r) => `<button class="pill small ${actor.roles.includes(r.id) ? 'toggled' : ''}" data-role="${esc(r.id)}">${actor.roles.includes(r.id) ? '✓ ' : ''}${esc(label(m.roles, r.id))}</button>`).join('')}
         ${(m.relations || []).map((r) => `<button class="pill small ${actor.relations[r.id] ? 'toggled' : ''}" data-rel="${esc(r.id)}">${actor.relations[r.id] ? '✓ ' : ''}${esc(r.label || pretty(r.id))}</button>`).join('')}
       </div>
-      ${m.settings.length ? `<div class="grp"><span class="lbl">Document settings</span>${m.settings.map((s) => `<button class="pill" data-setting="${esc(s.id)}"><span class="dot ${S.settings[s.id] ? 'on' : ''}"></span>${esc(s.label || pretty(s.id))} · ${S.settings[s.id] ? 'on' : 'off'}</button>`).join('')}</div>` : ''}
+      ${m.settings.length ? `<div class="grp"><span class="lbl" title="The document defines these options. You choose their values for this run.">Conditions · you choose</span>${m.settings.map((s) => `<button class="pill" data-setting="${esc(s.id)}"><span class="dot ${S.settings[s.id] ? 'on' : ''}"></span>${esc(s.label || pretty(s.id))} · ${S.settings[s.id] ? 'on' : 'off'}</button>`).join('')}</div>` : ''}
       ${(m.inputs || []).length ? `<div class="grp"><span class="lbl">Inputs</span>${m.inputs.map((i) => `<label class="faint" style="font-size:14px">${esc(i.label || pretty(i.id))} <input data-input="${esc(i.id)}" type="${i.type === 'integer' ? 'number' : 'text'}" step="any" value="${esc(S.inputs[i.id])}"></label>`).join('')}</div>` : ''}
       <details class="more" ${S.startOpen ? 'open' : ''}><summary>More setup · start state</summary><div class="grp"><span class="lbl">Start from</span>${m.variables.map((v) => `<select data-start="${esc(v.id)}" aria-label="${esc(label(m.variables, v.id))}">${v.values.map((val) => `<option ${String((S.start[v.id] ?? v.initial)) === String(val) ? 'selected' : ''} value="${esc(JSON.stringify(val))}">${esc(label(m.variables, v.id))}: ${esc(pretty(val))}</option>`).join('')}</select>`).join('')}</div></details>
     </section>
@@ -362,7 +370,7 @@ function viewReplay() {
         <div class="k">Path</div>
         <ol>
           <li><i></i>Start<div class="s">${esc(m.variables.map((v) => pretty(S.path[0]?.before[v.id] ?? S.state[v.id])).join(' · '))}</div></li>
-          ${S.path.map((p) => `<li><i class="${p.classification}"></i>${esc(p.actor.split(' · ')[0])} · ${esc(p.action)}<div class="s">${esc(p.label || 'Input check')}</div></li>`).join('')}
+          ${S.path.map((p) => `<li><i class="${p.classification}"></i>${esc(p.actor.split(' · ')[0])} · ${esc(p.action)}<div class="s">${esc(p.label || NOLABEL[p.classification] || '')}</div></li>`).join('')}
         </ol>
       </aside>
     </div>`;
@@ -375,10 +383,17 @@ function bindReplay() {
   $view.querySelectorAll('[data-role]').forEach((b) => b.addEventListener('click', () => {
     const r = b.dataset.role;
     actor.roles = actor.roles.includes(r) ? actor.roles.filter((x) => x !== r) : [...actor.roles, r];
-    render();
+    logSetup(`${actor.id} ${actor.roles.includes(r) ? 'is' : 'is not'} ${label(m.roles, r)}`); render();
   }));
-  $view.querySelectorAll('[data-rel]').forEach((b) => b.addEventListener('click', () => { actor.relations[b.dataset.rel] = !actor.relations[b.dataset.rel]; render(); }));
-  $view.querySelectorAll('[data-setting]').forEach((b) => b.addEventListener('click', () => { S.settings[b.dataset.setting] = !S.settings[b.dataset.setting]; render(); }));
+  $view.querySelectorAll('[data-rel]').forEach((b) => b.addEventListener('click', () => {
+    actor.relations[b.dataset.rel] = !actor.relations[b.dataset.rel];
+    logSetup(`${actor.id} ${actor.relations[b.dataset.rel] ? '' : 'not '}${label(m.relations, b.dataset.rel).toLowerCase()}`); render();
+  }));
+  const logSetup = (text) => { if (S.path.length) S.path.push({ classification: 'setup', actor: 'Setup', action: text, label: 'Changed by you', before: { ...S.state }, after: { ...S.state }, evidence: [] }); };
+  $view.querySelectorAll('[data-setting]').forEach((b) => b.addEventListener('click', () => {
+    const id = b.dataset.setting; S.settings[id] = !S.settings[id];
+    logSetup(`${label(m.settings, id)} ${S.settings[id] ? 'on' : 'off'}`); render();
+  }));
   $view.querySelectorAll('[data-input]').forEach((el) => el.addEventListener('change', () => { S.inputs[el.dataset.input] = el.value; }));
   $view.querySelectorAll('[data-start]').forEach((el) => el.addEventListener('change', () => { S.start[el.dataset.start] = JSON.parse(el.value); S.startOpen = true; resetPath(); render(); }));
   $view.querySelectorAll('[data-act]').forEach((b) => b.addEventListener('click', () => {
@@ -393,7 +408,8 @@ function bindReplay() {
     const edited = text !== S.draft.text;
     S.questions.push({
       text, source: edited ? `${S.draft.source}, edited by you` : S.draft.source,
-      path: S.path.map((p) => ({ actor: p.actor, action: p.action, label: p.label })),
+      path: S.path.map((p) => ({ actor: p.actor, action: p.action, label: p.label || NOLABEL[p.classification] || '', classification: p.classification })),
+      run: { id: S.runId, start: structuredClone(S.runStart), source_hash: S.doc.hash, extraction: S.extraction.recorded ? `recorded ${S.extraction.recorded_at}` : `run ${S.extraction.ran_at}`, included_rules: S.included.size },
       state: { ...S.last.after }, settings: { ...S.last.settings }, inputs: { ...S.last.inputs },
       evidence: S.last.evidence, reason: S.last.reason,
     });
@@ -401,7 +417,6 @@ function bindReplay() {
     toast('Added to questions');
     render();
   });
-  void m;
 }
 
 async function draftQuestion() {
@@ -435,7 +450,7 @@ function markdown() {
     `Extraction: ${S.extraction?.recorded ? `recorded run ${S.extraction.recorded_at}` : `run ${S.extraction?.ran_at || ''}`} · structural checks passed · rules reviewed by a person`, '',
   ];
   S.questions.forEach((q, i) => {
-    lines.push(`## ${i + 1}. ${q.text}`, '', `Question source: ${q.source}`, '', 'Path that reached this point:');
+    lines.push(`## ${i + 1}. ${q.text}`, '', `Question source: ${q.source}`, `Run: ${q.run.id} · ${q.run.extraction} · ${q.run.included_rules} reviewed rules included`, `Started from: ${m ? m.variables.map((v) => `${label(m.variables, v.id)} = ${pretty(q.run.start.state[v.id])}`).join(', ') : ''}`, '', 'Path that reached this point:');
     q.path.forEach((p, j) => lines.push(`${j + 1}. ${p.actor} → ${p.action} → ${p.label || 'Input check'}`));
     lines.push('', `Stopped in state: ${m ? m.variables.map((v) => `${label(m.variables, v.id)} = ${pretty(q.state[v.id])}`).join(', ') : ''}`);
     const set = Object.entries(q.settings || {}).map(([k, v]) => `${label(m?.settings, k)} ${v ? 'on' : 'off'}`).join(', ');
@@ -443,7 +458,7 @@ function markdown() {
     const inp = Object.entries(q.inputs || {}).map(([k, v]) => `${label(m?.inputs, k)} = ${v}`).join(', ');
     if (inp) lines.push(`Inputs: ${inp}`);
     lines.push('', 'Related source text:');
-    q.evidence.forEach((e) => lines.push(`> ${e.quote} (line ${e.line})`));
+    q.evidence.forEach((e) => lines.push(`> ${e.quote} (document line ${e.line})`));
     lines.push('');
   });
   if (!S.questions.length) lines.push('No open questions on the paths tried. This does not mean the document is complete.');
