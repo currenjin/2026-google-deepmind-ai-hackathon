@@ -1,0 +1,68 @@
+{
+  "upstream_commit": "cb051611377a0d2904411e6157154e9b4953d870",
+  "locale": "English",
+  "deployment_scope": "GitHub.com public repository, feature available, one simulated job/environment; no real GitHub integration",
+  "license": "CC-BY-4.0 for content/ files per upstream README; LICENSE copied unchanged",
+  "license_evidence": {
+    "README_url": "https://raw.githubusercontent.com/github/docs/cb051611377a0d2904411e6157154e9b4953d870/README.md",
+    "README_sha256": "1adc06cb1008208c356da0982fc8b81ee6d006695aae02f8464370ad87d78a5d",
+    "LICENSE_url": "https://raw.githubusercontent.com/github/docs/cb051611377a0d2904411e6157154e9b4953d870/LICENSE",
+    "LICENSE_sha256": "12d3a82a7d1378e6f597ec23d63a081aeb6ec4bc8de2a76ee9dc96c34c6d7a1b"
+  },
+  "sources": {
+    "review": {
+      "url": "https://raw.githubusercontent.com/github/docs/cb051611377a0d2904411e6157154e9b4953d870/content/actions/how-tos/deploy/configure-and-manage-deployments/review-deployments.md",
+      "path": "content/actions/how-tos/deploy/configure-and-manage-deployments/review-deployments.md",
+      "sha256": "858811a0e9cb6d65b1df0badc0eb27cfbb289128e80593c672d148eb5f844d08",
+      "bytes": 3032,
+      "local_path": "demo-reference/github-deployments-v1/review-deployments.md",
+      "input_start": 907,
+      "input_end": 3382,
+      "raw_body_start": 557,
+      "front_matter_removed": true
+    },
+    "reference": {
+      "url": "https://raw.githubusercontent.com/github/docs/cb051611377a0d2904411e6157154e9b4953d870/content/actions/reference/workflows-and-actions/deployments-and-environments.md",
+      "path": "content/actions/reference/workflows-and-actions/deployments-and-environments.md",
+      "sha256": "8c1af21ae1520145efd508db6bd26b21e60a6d87e07b10d9fa5ac9115c6793d7",
+      "bytes": 9029,
+      "local_path": "demo-reference/github-deployments-v1/deployments-and-environments.md",
+      "input_start": 3588,
+      "input_end": 12253,
+      "raw_body_start": 364,
+      "front_matter_removed": true
+    },
+    "manage": {
+      "url": "https://raw.githubusercontent.com/github/docs/cb051611377a0d2904411e6157154e9b4953d870/content/actions/how-tos/deploy/configure-and-manage-deployments/manage-environments.md",
+      "path": "content/actions/how-tos/deploy/configure-and-manage-deployments/manage-environments.md",
+      "sha256": "38b511dcfe948184416c77905503d16765b0fc54cea2d2ca5c69624c9af8bdd3",
+      "bytes": 8962,
+      "local_path": "demo-reference/github-deployments-v1/manage-environments.md",
+      "input_start": 12463,
+      "input_end": 20089,
+      "raw_body_start": 1336,
+      "front_matter_removed": true
+    }
+  },
+  "input_index_unit": "Unicode code points in UTF-8 decoded text; not JavaScript UTF-16 code units",
+  "linked_documents_not_implicitly_included": true,
+  "input": {
+    "path": "demo-reference/github-deployments-v1/input.md",
+    "sha256": "a6a85c8a158dc55e54f58f315fe3bf0e9b3e7a5c3ecd7823590764a0cb2c7790",
+    "characters": 20089,
+    "bytes": 20089
+  },
+  "excluded_cross_check": {
+    "source": {
+      "url": "https://raw.githubusercontent.com/github/docs/cb051611377a0d2904411e6157154e9b4953d870/content/actions/reference/limits.md",
+      "path": "content/actions/reference/limits.md",
+      "sha256": "e63b158624a67baa920a804c55aa952a11adb783593f0e8a217363fd83599d43",
+      "bytes": 11327,
+      "role": "external cross-check only; not initial input corpus"
+    },
+    "line": 30,
+    "text": "| Workflow execution limit | Gate approval time | 30 days | A workflow may wait for up to [30 days on environment approvals](/actions/reference/workflows-and-actions/deployments-and-environments#wait-timer). | {% octicon \"x\" aria-label=\"No\" %} |",
+    "included_in_initial_input": false,
+    "purpose": "Shows that a source-bounded question about approval waiting duration is not a GitHub-wide unknown or product bug. This page states a 30-day approval-wait limit, not an assumed precise failure terminal status."
+  }
+}

@@ -1,0 +1,617 @@
+{
+  "version": "github-deployments-v1",
+  "status": "INDEPENDENT_ORACLES_FROZEN_PRODUCT_NOT_RUN",
+  "scope": "One simulated GitHub deployment review job with documented reviewer/admin actions; not actual GitHub API behavior testing.",
+  "source_manifest": "demo-reference/github-deployments-v1/manifest.json",
+  "input": {
+    "path": "demo-reference/github-deployments-v1/input.md",
+    "sha256": "a6a85c8a158dc55e54f58f315fe3bf0e9b3e7a5c3ecd7823590764a0cb2c7790",
+    "characters": 20089,
+    "bytes": 20089
+  },
+  "frozen_commit": "cb051611377a0d2904411e6157154e9b4953d870",
+  "source_corpus": [
+    "review",
+    "reference",
+    "manage"
+  ],
+  "source_references": {
+    "approve": {
+      "source": "review",
+      "lines": [
+        25,
+        25
+      ],
+      "quote": "   * To approve the job, click **Approve and deploy**. Once a job is approved (and any other deployment protection rules have passed), the job will proceed. At this point, the job can access any secrets stored in the environment.\n",
+      "input_start": 1371,
+      "input_end": 1601,
+      "index_unit": "Unicode code points",
+      "source_sha256": "858811a0e9cb6d65b1df0badc0eb27cfbb289128e80593c672d148eb5f844d08"
+    },
+    "reject": {
+      "source": "review",
+      "lines": [
+        26,
+        26
+      ],
+      "quote": "   * To reject the job, click **Reject**. If a job is rejected, the workflow will fail.\n",
+      "input_start": 1601,
+      "input_end": 1689,
+      "index_unit": "Unicode code points",
+      "source_sha256": "858811a0e9cb6d65b1df0badc0eb27cfbb289128e80593c672d148eb5f844d08"
+    },
+    "self-review": {
+      "source": "review",
+      "lines": [
+        28,
+        29
+      ],
+      "quote": "> [!NOTE]\n> If the targeted environment is configured to prevent self-approvals for deployments, you will not be able to approve a deployment from a workflow run you initiated. For more information, see [AUTOTITLE](/actions/how-tos/deploy/configure-and-manage-deployments/manage-environments).\n",
+      "input_start": 1690,
+      "input_end": 1984,
+      "index_unit": "Unicode code points",
+      "source_sha256": "858811a0e9cb6d65b1df0badc0eb27cfbb289128e80593c672d148eb5f844d08"
+    },
+    "bypass-block": {
+      "source": "review",
+      "lines": [
+        35,
+        37
+      ],
+      "quote": "> [!NOTE]\n> * You cannot bypass deployment protection rules if the environment has been configured to prevent admins from bypassing configured protection rules. For more information, see [AUTOTITLE](/actions/how-tos/deploy/configure-and-manage-deployments/manage-environments#creating-an-environment).\n> * You can only bypass deployment protection rules during workflow execution when a job referencing the environment is in a \"Pending\" state.\n",
+      "input_start": 2238,
+      "input_end": 2682,
+      "index_unit": "Unicode code points",
+      "source_sha256": "858811a0e9cb6d65b1df0badc0eb27cfbb289128e80593c672d148eb5f844d08"
+    },
+    "bypass-action": {
+      "source": "review",
+      "lines": [
+        33,
+        33
+      ],
+      "quote": "If you have configured deployment protection rules that control whether software can be deployed to an environment, you can bypass these rules and force all pending jobs referencing the environment to proceed.\n",
+      "input_start": 2027,
+      "input_end": 2237,
+      "index_unit": "Unicode code points",
+      "source_sha256": "858811a0e9cb6d65b1df0badc0eb27cfbb289128e80593c672d148eb5f844d08"
+    },
+    "bypass-pending": {
+      "source": "review",
+      "lines": [
+        37,
+        37
+      ],
+      "quote": "> * You can only bypass deployment protection rules during workflow execution when a job referencing the environment is in a \"Pending\" state.\n",
+      "input_start": 2540,
+      "input_end": 2682,
+      "index_unit": "Unicode code points",
+      "source_sha256": "858811a0e9cb6d65b1df0badc0eb27cfbb289128e80593c672d148eb5f844d08"
+    },
+    "required-reviewers": {
+      "source": "reference",
+      "lines": [
+        24,
+        28
+      ],
+      "quote": "### Required reviewers\n\nUse required reviewers to require a specific person or team to approve workflow jobs that reference the environment. You can list up to six users or teams as reviewers. The reviewers must have at least read access to the repository. Only one of the required reviewers needs to approve the job for it to proceed.\n\nYou also have the option to prevent self-reviews for deployments to protected environments. If you enable this setting, users who initiate a deployment cannot approve the deployment job, even if they are a required reviewer. This ensures that deployments to protected environments are always reviewed by more than one person.\n",
+      "input_start": 4411,
+      "input_end": 5074,
+      "index_unit": "Unicode code points",
+      "source_sha256": "8c1af21ae1520145efd508db6bd26b21e60a6d87e07b10d9fa5ac9115c6793d7"
+    },
+    "admin-bypass": {
+      "source": "reference",
+      "lines": [
+        73,
+        77
+      ],
+      "quote": "### Allow administrators to bypass configured protection rules\n\nBy default, administrators can bypass the protection rules and force deployments to specific environments. For more information, see [AUTOTITLE](/actions/how-tos/deploy/configure-and-manage-deployments/review-deployments#bypassing-deployment-protection-rules).\n\nAlternatively, you can configure environments to disallow bypassing the protection rules for all deployments to the environment.\n",
+      "input_start": 8307,
+      "input_end": 8762,
+      "index_unit": "Unicode code points",
+      "source_sha256": "8c1af21ae1520145efd508db6bd26b21e60a6d87e07b10d9fa5ac9115c6793d7"
+    },
+    "all-secrets-gates": {
+      "source": "manage",
+      "lines": [
+        82,
+        82
+      ],
+      "quote": "1. Optionally, add environment secrets. These secrets are only available to workflow jobs that use the environment. Additionally, workflow jobs that use this environment can only access these secrets after any configured rules (for example, required reviewers) pass. For more information, see [AUTOTITLE](/actions/reference/workflows-and-actions/deployments-and-environments#environment-secrets).\n",
+      "input_start": 16794,
+      "input_end": 17191,
+      "index_unit": "Unicode code points",
+      "source_sha256": "38b511dcfe948184416c77905503d16765b0fc54cea2d2ca5c69624c9af8bdd3"
+    },
+    "optional-self-review": {
+      "source": "manage",
+      "lines": [
+        58,
+        62
+      ],
+      "quote": "1. Optionally, specify people or teams that must approve workflow jobs that use this environment. For more information, see [AUTOTITLE](/actions/reference/workflows-and-actions/deployments-and-environments#required-reviewers).\n   1. Select **Required reviewers**.\n   1. Enter up to 6 people or teams. Only one of the required reviewers needs to approve the job for it to proceed.\n   1. Optionally, to prevent users from approving workflows runs that they triggered, select **Prevent self-review**.\n   1. Click **Save protection rules**.\n",
+      "input_start": 14349,
+      "input_end": 14886,
+      "index_unit": "Unicode code points",
+      "source_sha256": "38b511dcfe948184416c77905503d16765b0fc54cea2d2ca5c69624c9af8bdd3"
+    },
+    "all-job-gates": {
+      "source": "reference",
+      "lines": [
+        16,
+        18
+      ],
+      "quote": "## Deployment protection rules\n\nDeployment protection rules require specific conditions to pass before a job referencing the environment can proceed. You can use deployment protection rules to require a manual approval, delay a job, or restrict the environment to certain branches. You can also create and implement custom protection rules powered by {% data variables.product.prodname_github_apps %} to use third-party systems to control deployments referencing environments configured on {% data variables.product.github %}.\n",
+      "input_start": 3589,
+      "input_end": 4116,
+      "index_unit": "Unicode code points",
+      "source_sha256": "8c1af21ae1520145efd508db6bd26b21e60a6d87e07b10d9fa5ac9115c6793d7"
+    },
+    "approval-secrets": {
+      "source": "reference",
+      "lines": [
+        101,
+        103
+      ],
+      "quote": "## Environment secrets\n\nSecrets stored in an environment are only available to workflow jobs that reference the environment. If the environment requires approval, a job cannot access environment secrets until one of the required reviewers approves it. For more information about secrets, see [AUTOTITLE](/actions/concepts/security/secrets).\n",
+      "input_start": 10039,
+      "input_end": 10380,
+      "index_unit": "Unicode code points",
+      "source_sha256": "8c1af21ae1520145efd508db6bd26b21e60a6d87e07b10d9fa5ac9115c6793d7"
+    }
+  },
+  "scenarios": [
+    {
+      "id": "G01",
+      "name": "One required reviewer approves; do not claim deployment success",
+      "setup": {
+        "job": "one simulated deployment job",
+        "job_state": "pending_approval",
+        "workflow_state": "active",
+        "initiator": "actor_A",
+        "required_reviewers": [
+          "actor_B",
+          "actor_C"
+        ],
+        "reviewer_repository_access": "read_or_higher",
+        "prevent_self_review": true,
+        "other_protection_rules_passed": true,
+        "environment_secrets_eligible": false,
+        "feature_availability_assumed_for_simulated_setup": true
+      },
+      "action": {
+        "actor": "actor_B",
+        "action": "Approve and deploy"
+      },
+      "expected": {
+        "classification": "Defined",
+        "review_decision": "approved",
+        "job_may_proceed": true,
+        "environment_secrets_eligible": true,
+        "gap_questions": 0,
+        "must_not_claim": [
+          "job executed",
+          "deployment succeeded",
+          "secrets read",
+          "both reviewers required"
+        ]
+      },
+      "independent_source_refs": [
+        "approve",
+        "required-reviewers",
+        "all-secrets-gates",
+        "approval-secrets"
+      ],
+      "actual": null,
+      "verdict": "NOT_RUN",
+      "evidence": [],
+      "mandatory_for_claimed_behavior": true,
+      "surface": [
+        "Verify",
+        "Replay",
+        "Questions export when present"
+      ],
+      "setup_is_authored_simulated_control_not_upstream_fact": true
+    },
+    {
+      "id": "G02",
+      "name": "Rejection fails the workflow, not a missing rule",
+      "setup": {
+        "job": "one simulated deployment job",
+        "job_state": "pending_approval",
+        "workflow_state": "active",
+        "initiator": "actor_A",
+        "required_reviewers": [
+          "actor_B",
+          "actor_C"
+        ],
+        "reviewer_repository_access": "read_or_higher",
+        "prevent_self_review": true,
+        "other_protection_rules_passed": true,
+        "environment_secrets_eligible": false,
+        "feature_availability_assumed_for_simulated_setup": true
+      },
+      "action": {
+        "actor": "actor_B",
+        "action": "Reject"
+      },
+      "expected": {
+        "classification": "Defined",
+        "review_decision": "rejected",
+        "workflow_state": "failed",
+        "gap_questions": 0,
+        "must_not_invent_reopening_or_rescue_approval": true
+      },
+      "independent_source_refs": [
+        "reject"
+      ],
+      "actual": null,
+      "verdict": "NOT_RUN",
+      "evidence": [],
+      "mandatory_for_claimed_behavior": true,
+      "surface": [
+        "Verify",
+        "Replay",
+        "Questions export when present"
+      ],
+      "setup_is_authored_simulated_control_not_upstream_fact": true
+    },
+    {
+      "id": "G03",
+      "name": "Initiator cannot self-approve even if required reviewer",
+      "setup": {
+        "job": "one simulated deployment job",
+        "job_state": "pending_approval",
+        "workflow_state": "active",
+        "initiator": "actor_A",
+        "required_reviewers": [
+          "actor_A",
+          "actor_B"
+        ],
+        "reviewer_repository_access": "read_or_higher",
+        "prevent_self_review": true,
+        "other_protection_rules_passed": true,
+        "environment_secrets_eligible": false,
+        "feature_availability_assumed_for_simulated_setup": true
+      },
+      "action": {
+        "actor": "actor_A",
+        "action": "Approve and deploy"
+      },
+      "expected": {
+        "classification": "Blocked by document",
+        "job_state": "pending_approval",
+        "review_decision": "not_approved",
+        "environment_secrets_eligible": false,
+        "gap_questions": 0
+      },
+      "independent_source_refs": [
+        "self-review",
+        "required-reviewers"
+      ],
+      "actual": null,
+      "verdict": "NOT_RUN",
+      "evidence": [],
+      "mandatory_for_claimed_behavior": true,
+      "surface": [
+        "Verify",
+        "Replay",
+        "Questions export when present"
+      ],
+      "setup_is_authored_simulated_control_not_upstream_fact": true
+    },
+    {
+      "id": "G04",
+      "name": "Self-review prohibition changes with documented option",
+      "setup": {
+        "job": "one simulated deployment job",
+        "job_state": "pending_approval",
+        "workflow_state": "active",
+        "initiator": "actor_A",
+        "required_reviewers": [
+          "actor_A"
+        ],
+        "reviewer_repository_access": "read_or_higher",
+        "prevent_self_review": false,
+        "other_protection_rules_passed": true,
+        "environment_secrets_eligible": false,
+        "feature_availability_assumed_for_simulated_setup": true
+      },
+      "action": {
+        "actor": "actor_A",
+        "action": "Approve and deploy"
+      },
+      "expected": {
+        "classification": "Defined",
+        "review_decision": "approved",
+        "job_may_proceed": true,
+        "gap_questions": 0,
+        "comparison": "Same initiating reviewer as G03; documentation and setup explicitly disable the optional self-review restriction.",
+        "environment_secrets_eligible": true,
+        "must_not_claim": [
+          "job executed",
+          "deployment succeeded",
+          "secrets read"
+        ]
+      },
+      "independent_source_refs": [
+        "required-reviewers",
+        "approve",
+        "optional-self-review",
+        "all-secrets-gates",
+        "approval-secrets"
+      ],
+      "actual": null,
+      "verdict": "NOT_RUN",
+      "evidence": [],
+      "mandatory_for_claimed_behavior": true,
+      "surface": [
+        "Verify",
+        "Replay",
+        "Questions export when present"
+      ],
+      "setup_is_authored_simulated_control_not_upstream_fact": true
+    },
+    {
+      "id": "G05",
+      "name": "Configured administrator bypass prohibition",
+      "setup": {
+        "job": "one simulated deployment job",
+        "job_state": "pending_approval",
+        "workflow_state": "active",
+        "initiator": "actor_A",
+        "required_reviewers": [
+          "actor_B",
+          "actor_C"
+        ],
+        "reviewer_repository_access": "read_or_higher",
+        "prevent_self_review": true,
+        "other_protection_rules_passed": true,
+        "environment_secrets_eligible": false,
+        "feature_availability_assumed_for_simulated_setup": true,
+        "allow_admin_bypass": false
+      },
+      "action": {
+        "actor": "authorized_administrator",
+        "action": "bypass deployment protection rules"
+      },
+      "expected": {
+        "classification": "Blocked by document",
+        "job_state": "pending_approval",
+        "job_may_proceed": false,
+        "gap_questions": 0
+      },
+      "independent_source_refs": [
+        "bypass-block",
+        "admin-bypass"
+      ],
+      "actual": null,
+      "verdict": "NOT_RUN",
+      "evidence": [],
+      "mandatory_for_claimed_behavior": true,
+      "surface": [
+        "Verify",
+        "Replay",
+        "Questions export when present"
+      ],
+      "setup_is_authored_simulated_control_not_upstream_fact": true
+    },
+    {
+      "id": "G06",
+      "name": "Allowed administrator bypass applies to pending job",
+      "setup": {
+        "job": "one simulated deployment job",
+        "job_state": "pending_approval",
+        "workflow_state": "active",
+        "initiator": "actor_A",
+        "required_reviewers": [
+          "actor_B",
+          "actor_C"
+        ],
+        "reviewer_repository_access": "read_or_higher",
+        "prevent_self_review": true,
+        "other_protection_rules_passed": true,
+        "environment_secrets_eligible": false,
+        "feature_availability_assumed_for_simulated_setup": true,
+        "allow_admin_bypass": true
+      },
+      "action": {
+        "actor": "authorized_administrator",
+        "action": "bypass deployment protection rules"
+      },
+      "expected": {
+        "classification": "Defined",
+        "job_may_proceed": true,
+        "no_real_workflow_started": true,
+        "gap_questions": 0,
+        "must_not_claim_deployment_succeeded": true,
+        "must_not_claim": [
+          "environment secrets eligible or ineligible from bypass alone",
+          "review approved merely because bypass happened"
+        ]
+      },
+      "independent_source_refs": [
+        "admin-bypass",
+        "bypass-action",
+        "bypass-pending"
+      ],
+      "actual": null,
+      "verdict": "NOT_RUN",
+      "evidence": [],
+      "mandatory_for_claimed_behavior": true,
+      "surface": [
+        "Verify",
+        "Replay",
+        "Questions export when present"
+      ],
+      "setup_is_authored_simulated_control_not_upstream_fact": true
+    },
+    {
+      "id": "G07",
+      "name": "Bypass is invalid outside the documented pending state",
+      "setup": {
+        "job": "one simulated deployment job",
+        "job_state": "already_running",
+        "workflow_state": "active",
+        "initiator": "actor_A",
+        "required_reviewers": [
+          "actor_B",
+          "actor_C"
+        ],
+        "reviewer_repository_access": "read_or_higher",
+        "prevent_self_review": true,
+        "other_protection_rules_passed": true,
+        "environment_secrets_eligible": true,
+        "feature_availability_assumed_for_simulated_setup": true,
+        "allow_admin_bypass": true,
+        "review_decision": "already approved before this starting checkpoint"
+      },
+      "action": {
+        "actor": "authorized_administrator",
+        "action": "bypass deployment protection rules",
+        "test_method": "attempt unavailable bypass control or test handler guard without adding a fake GitHub button or making an external request"
+      },
+      "expected": {
+        "classification": "Blocked by document",
+        "job_state": "already_running",
+        "gap_questions": 0,
+        "no_extra_transition": true
+      },
+      "independent_source_refs": [
+        "bypass-pending"
+      ],
+      "actual": null,
+      "verdict": "NOT_RUN",
+      "evidence": [],
+      "mandatory_for_claimed_behavior": true,
+      "surface": [
+        "Verify",
+        "Replay",
+        "Questions export when present"
+      ],
+      "setup_is_authored_simulated_control_not_upstream_fact": true
+    },
+    {
+      "id": "G08",
+      "name": "Approval alone does not bypass other required protections",
+      "setup": {
+        "job": "one simulated deployment job",
+        "job_state": "pending_approval",
+        "workflow_state": "active",
+        "initiator": "actor_A",
+        "required_reviewers": [
+          "actor_B",
+          "actor_C"
+        ],
+        "reviewer_repository_access": "read_or_higher",
+        "prevent_self_review": true,
+        "other_protection_rules_passed": false,
+        "environment_secrets_eligible": false,
+        "feature_availability_assumed_for_simulated_setup": true,
+        "other_protection_rules_status": "still_pending, not failed"
+      },
+      "action": {
+        "actor": "actor_B",
+        "action": "Approve and deploy"
+      },
+      "expected": {
+        "classification": "Defined",
+        "review_decision": "approved",
+        "job_may_proceed": false,
+        "environment_secrets_eligible": false,
+        "gap_questions": 0,
+        "remaining_gate": "other configured protection rules have not passed",
+        "state_claim_boundary": "recording approval is defined; no invented terminal failure or successful deployment; last observed job remains gated"
+      },
+      "independent_source_refs": [
+        "approve",
+        "all-secrets-gates",
+        "all-job-gates",
+        "approval-secrets"
+      ],
+      "actual": null,
+      "verdict": "NOT_RUN",
+      "evidence": [],
+      "mandatory_for_claimed_behavior": true,
+      "surface": [
+        "Verify",
+        "Replay",
+        "Questions export when present"
+      ],
+      "setup_is_authored_simulated_control_not_upstream_fact": true
+    }
+  ],
+  "claim_boundary": {
+    "defined_and_blocked_controls": "G01-G08 are source-derived expectations, not product results.",
+    "exact_state_names": "pending_approval, already_running and job_may_proceed are canonical simulation abstractions; do not claim literal API status names. The workflow outcome failed and absence of approval (not_approved) are semantic abstractions too. pending_approval corresponds to the documented review-pending/Pending condition; no raw API status is asserted.",
+    "automatic_real_document_gap_discovery": "UNVERIFIED: no source-proven supported Replay action with genuinely missing destination is asserted here. Do not force a false positive from a denied/terminal/unsupported action.",
+    "zero_live_model_or_github_execution": true,
+    "no_synthetic_policy_added_to_source": true
+  },
+  "source_scope_diagnostic": {
+    "id": "GD01",
+    "gating": false,
+    "stage": "oracle/source-scope analysis only; not a Replay action or implemented feature",
+    "reachable_context": "job is pending required review and no reviewer responds",
+    "question": "What maximum time-based approval-wait duration and timeout end-state are specified by this supplied corpus?",
+    "expected": "The three supplied pages do not specify the approval waiting deadline. Do not substitute the optional Wait timer range for this deadline. Ask about the missing completion condition only within the supplied-document scope. Rejection and environment deletion are already documented non-time-based exits; do not claim that all termination handling is absent.",
+    "external_known_answer": {
+      "source": {
+        "url": "https://raw.githubusercontent.com/github/docs/cb051611377a0d2904411e6157154e9b4953d870/content/actions/reference/limits.md",
+        "path": "content/actions/reference/limits.md",
+        "sha256": "e63b158624a67baa920a804c55aa952a11adb783593f0e8a217363fd83599d43",
+        "bytes": 11327,
+        "role": "external cross-check only; not initial input corpus"
+      },
+      "line": 30,
+      "text": "| Workflow execution limit | Gate approval time | 30 days | A workflow may wait for up to [30 days on environment approvals](/actions/reference/workflows-and-actions/deployments-and-environments#wait-timer). | {% octicon \"x\" aria-label=\"No\" %} |",
+      "included_in_initial_input": false,
+      "purpose": "Shows that a source-bounded question about approval waiting duration is not a GitHub-wide unknown or product bug. This page states a 30-day approval-wait limit, not an assumed precise failure terminal status."
+    },
+    "must_not_claim": [
+      "GitHub has no timeout",
+      "GitHub bug",
+      "entire GitHub documentation is incomplete",
+      "30 days is justified by the supplied Wait timer paragraph",
+      "the product automatically detected this gap",
+      "a precise workflow/job failure status not specified by the corpus"
+    ],
+    "why_not_a_gating_replay_case": "No timer event or additional UI action is approved; this diagnostic must not force a new clock feature or an invented GitHub button."
+  },
+  "safe_negative_candidate_dispositions": [
+    {
+      "candidate": "one reviewer rejects, another later approves",
+      "disposition": "Not a proven gap: supplied review page already states rejection fails the workflow. Do not invent a later recovery path."
+    },
+    {
+      "candidate": "initiator is the only reviewer with prevent-self-review on",
+      "disposition": "Explicit approval prohibition, not an undefined policy or bug."
+    },
+    {
+      "candidate": "English/Korean Wait timer boundary discrepancy",
+      "disposition": "Excluded: locale/version pair not pinned and timer configuration not in selected control scope."
+    }
+  ],
+  "reproduce": [
+    "Paste exactly the immutable input.md, with document hash verified.",
+    "Extract citations from that text using recorded Unicode-code-point spans; do not substitute live linked pages or model knowledge.",
+    "Human-review semantics; use each authored simulated setup and invoke only the documented action.",
+    "Capture review decision separately from job eligibility and actual execution.",
+    "Compare actual trace/evidence/export to G01-G08 without editing expected."
+  ],
+  "actual": null,
+  "verdict": "NOT_RUN",
+  "review": {
+    "status": "APPROVE",
+    "scope": "G01-G08 source-derived criteria only; GD01 non-gating diagnostic; no automatic real-gap claim",
+    "model": "claude-opus-5-5",
+    "session_id": "ec123774-426d-46e9-9414-be03291f27cb",
+    "report": "demo-reference/github-deployments-v1/claude-oracle-review.md",
+    "reviewed_oracle_sha256": "9574ac87dc5037c855a2d804958a4fecab7a2898be1031ce8935fbc445a7fa47",
+    "only_review_metadata_changed_after_recheck": true,
+    "parent_hash_span_and_corpus_integrity_checks": "passed",
+    "is_not_oracle": true
+  },
+  "validator_note": "Approval is a necessary condition for environment-secret eligibility in the source, not a sufficient condition by itself; all other configured protections must also pass."
+}

@@ -1,0 +1,1602 @@
+{
+  "schema_version": 1,
+  "product": "Spec Gap Replay (temporary name)",
+  "contract_version": "spec-gap-v1",
+  "created_at": "2026-10-16T11:36:53.668196+09:00",
+  "status": "CRITERIA_FROZEN_PRODUCT_NOT_RUN",
+  "author_role": "GPT criteria author; normative fixtures and manual rule derivations, not product model output",
+  "source_spec": {
+    "path": "product-spec-current.md",
+    "sha256": "6e754db1b72a80b900bcbe5143c835d6b650e359447dbc166118cb957ea5d5b6",
+    "status": "product direction chosen; detailed scope and UX still proposals",
+    "prior_sha256": "d6857ab6106eef8090b89898727ad330c14022afd35f8b8b0f699155cf1246c8",
+    "reviewed_sha256": "38f1e3a4728390ad22f6822f575a90c2a4b47521c101ac2449c5cdb54d9a48b5",
+    "merge_binding_note": "Parallel approval history preserved in details; parent verified remaining normative text exactly equals reviewed source. No expected values changed.",
+    "before_real_input_binding_sha256": "e0c3e61afe4d745bd07ab0ff0810b206cf29404c2eb727b3e3f412b08cd47a51",
+    "input_binding_update": "Only selected real-input paragraph updated after real-source review; core policy/expected remain unchanged."
+  },
+  "actual_product_outputs_seen": false,
+  "source_boundary": "Synthetic fixtures establish conformance controls only; no actual customer PRD, measured demand, real-world gap recall or Cal.com defect is established.",
+  "required_surfaces": {
+    "review": "source-to-rule mappings and human review gate",
+    "replay": "real input/button actions execute reviewed rules",
+    "guidance": "progress follows committed business-state result, not click alone",
+    "export": "downloaded Markdown faithfully records actual trace/evidence/question"
+  },
+  "fixtures": {
+    "complete": {
+      "path": "demo-reference/spec-gap-v1/complete.md",
+      "sha256": "6c032b4ec73c25c272048c8db25a3c58c84c095740ebafb37615e8df9f464206",
+      "origin": "authored synthetic normative test specification",
+      "not_customer_PRD": true,
+      "rule_lines": {
+        "R1": 4,
+        "R2": 5,
+        "R3": 6,
+        "R4": 7,
+        "R5": 8
+      }
+    },
+    "limit-200": {
+      "path": "demo-reference/spec-gap-v1/limit-200.md",
+      "sha256": "9aff75bc6815f606c577059e739a24912e2ebd529708b52159e9b0fa2c4bc128",
+      "origin": "authored synthetic normative test specification",
+      "not_customer_PRD": true,
+      "rule_lines": {
+        "R1": 4,
+        "R2": 5,
+        "R3": 6,
+        "R4": 7,
+        "R5": 8
+      }
+    },
+    "missing-outcome": {
+      "path": "demo-reference/spec-gap-v1/missing-outcome.md",
+      "sha256": "543399955881421d1529e706c2ecfe536ab3e3190e9ed1db9ef49205b3266116",
+      "origin": "authored synthetic normative test specification",
+      "not_customer_PRD": true,
+      "rule_lines": {
+        "R1": 4,
+        "R2": 5,
+        "R3": 6,
+        "R4": 7,
+        "R5": 8
+      }
+    },
+    "contradiction": {
+      "path": "demo-reference/spec-gap-v1/contradiction.md",
+      "sha256": "f1e8192db4167146aff49731515caed384ce1480ee197ff45b81836d52139561",
+      "origin": "authored synthetic normative test specification",
+      "not_customer_PRD": true,
+      "rule_lines": {
+        "R1": 4,
+        "R2": 5,
+        "R3": 6,
+        "R4": 7,
+        "R5": 8,
+        "R6": 9
+      }
+    },
+    "unsupported": {
+      "path": "demo-reference/spec-gap-v1/unsupported.md",
+      "sha256": "554991fd8c0a05f5c50e9c34bfdc8aa55175864169684d0b4752a7db90818cc1",
+      "origin": "authored synthetic scope-rejection control",
+      "not_customer_PRD": true,
+      "rule_lines": {}
+    }
+  },
+  "scenarios": [
+    {
+      "id": "C01",
+      "name": "Normal submit and approve",
+      "fixture": "complete",
+      "setup": {
+        "source_reviewed": true,
+        "role": "requester",
+        "status": "draft",
+        "units": 80
+      },
+      "actions": [
+        {
+          "actor": "requester",
+          "action": "submit"
+        },
+        {
+          "actor": "reviewer",
+          "action": "approve"
+        }
+      ],
+      "expected": {
+        "statuses": [
+          "pending",
+          "approved"
+        ],
+        "outcomes": [
+          "defined",
+          "defined"
+        ],
+        "gap_questions": 0,
+        "terminal_status": "approved"
+      },
+      "oracle": {
+        "type": "source rule interpretation fixed before product output",
+        "references": [
+          "complete:R1",
+          "complete:R2",
+          "complete:R3"
+        ]
+      },
+      "kind": "behavior",
+      "surfaces": [
+        "review",
+        "replay",
+        "guidance",
+        "export"
+      ],
+      "actual": null,
+      "verdict": "NOT_RUN",
+      "evidence": [],
+      "excluded_from_result_claims_until_verified": true
+    },
+    {
+      "id": "C02",
+      "name": "Normal rejection is not a gap",
+      "fixture": "complete",
+      "setup": {
+        "source_reviewed": true,
+        "role": "requester",
+        "status": "draft",
+        "units": 80
+      },
+      "actions": [
+        {
+          "actor": "requester",
+          "action": "submit"
+        },
+        {
+          "actor": "reviewer",
+          "action": "reject"
+        }
+      ],
+      "expected": {
+        "statuses": [
+          "pending",
+          "rejected"
+        ],
+        "outcomes": [
+          "defined",
+          "defined"
+        ],
+        "gap_questions": 0
+      },
+      "oracle": {
+        "type": "source rule interpretation fixed before product output",
+        "references": [
+          "complete:R1",
+          "complete:R2",
+          "complete:R4"
+        ]
+      },
+      "kind": "behavior",
+      "surfaces": [
+        "review",
+        "replay",
+        "guidance",
+        "export"
+      ],
+      "actual": null,
+      "verdict": "NOT_RUN",
+      "evidence": [],
+      "excluded_from_result_claims_until_verified": true
+    },
+    {
+      "id": "C03",
+      "name": "Explicit condition forbids approval",
+      "fixture": "complete",
+      "setup": {
+        "source_reviewed": true,
+        "role": "requester",
+        "status": "draft",
+        "units": 101
+      },
+      "actions": [
+        {
+          "actor": "requester",
+          "action": "submit"
+        },
+        {
+          "actor": "reviewer",
+          "action": "approve"
+        }
+      ],
+      "expected": {
+        "statuses": [
+          "pending",
+          "pending"
+        ],
+        "outcomes": [
+          "defined",
+          "forbidden"
+        ],
+        "gap_questions": 0,
+        "reason_rule": "R3"
+      },
+      "oracle": {
+        "type": "source rule interpretation fixed before product output",
+        "references": [
+          "complete:R1",
+          "complete:R3",
+          "complete:R2"
+        ]
+      },
+      "kind": "behavior",
+      "surfaces": [
+        "review",
+        "replay",
+        "guidance",
+        "export"
+      ],
+      "actual": null,
+      "verdict": "NOT_RUN",
+      "evidence": [],
+      "excluded_from_result_claims_until_verified": true
+    },
+    {
+      "id": "C04",
+      "name": "Changed source changes actual behavior",
+      "fixture": "limit-200",
+      "setup": {
+        "source_reviewed": true,
+        "role": "requester",
+        "status": "draft",
+        "units": 101
+      },
+      "actions": [
+        {
+          "actor": "requester",
+          "action": "submit"
+        },
+        {
+          "actor": "reviewer",
+          "action": "approve"
+        }
+      ],
+      "expected": {
+        "statuses": [
+          "pending",
+          "approved"
+        ],
+        "outcomes": [
+          "defined",
+          "defined"
+        ],
+        "gap_questions": 0,
+        "compare_to": "C03",
+        "same_input_except_document": true
+      },
+      "oracle": {
+        "type": "source rule interpretation fixed before product output",
+        "references": [
+          "limit-200:R1",
+          "limit-200:R3",
+          "limit-200:R2"
+        ]
+      },
+      "kind": "behavior",
+      "surfaces": [
+        "review",
+        "replay",
+        "guidance",
+        "export"
+      ],
+      "actual": null,
+      "verdict": "NOT_RUN",
+      "evidence": [],
+      "excluded_from_result_claims_until_verified": true
+    },
+    {
+      "id": "C05",
+      "name": "Wrong role is forbidden, not undefined",
+      "fixture": "complete",
+      "setup": {
+        "source_reviewed": true,
+        "role": "requester",
+        "status": "draft",
+        "units": 80
+      },
+      "actions": [
+        {
+          "actor": "requester",
+          "action": "submit"
+        },
+        {
+          "actor": "requester",
+          "action": "approve"
+        }
+      ],
+      "expected": {
+        "statuses": [
+          "pending",
+          "pending"
+        ],
+        "outcomes": [
+          "defined",
+          "forbidden"
+        ],
+        "gap_questions": 0,
+        "reason_rule": "R2"
+      },
+      "oracle": {
+        "type": "source rule interpretation fixed before product output",
+        "references": [
+          "complete:R1",
+          "complete:R2"
+        ]
+      },
+      "kind": "behavior",
+      "surfaces": [
+        "review",
+        "replay",
+        "guidance",
+        "export"
+      ],
+      "actual": null,
+      "verdict": "NOT_RUN",
+      "evidence": [],
+      "excluded_from_result_claims_until_verified": true
+    },
+    {
+      "id": "C06",
+      "name": "Available action with unspecified result",
+      "fixture": "missing-outcome",
+      "setup": {
+        "source_reviewed": true,
+        "role": "requester",
+        "status": "draft",
+        "units": 80
+      },
+      "actions": [
+        {
+          "actor": "requester",
+          "action": "submit"
+        },
+        {
+          "actor": "reviewer",
+          "action": "approve"
+        }
+      ],
+      "expected": {
+        "statuses": [
+          "pending",
+          "pending"
+        ],
+        "outcomes": [
+          "defined",
+          "needs_clarification"
+        ],
+        "question_semantics": [
+          "What status follows reviewer approval for a pending request with 80 units?"
+        ],
+        "forbidden_inferences": [
+          "auto-confirm",
+          "invented destination state",
+          "actual customer defect"
+        ],
+        "business_state_preserved_on_uncertainty": true
+      },
+      "oracle": {
+        "type": "source rule interpretation fixed before product output",
+        "references": [
+          "missing-outcome:R1",
+          "missing-outcome:R3"
+        ]
+      },
+      "kind": "behavior",
+      "surfaces": [
+        "review",
+        "replay",
+        "guidance",
+        "export"
+      ],
+      "actual": null,
+      "verdict": "NOT_RUN",
+      "evidence": [],
+      "excluded_from_result_claims_until_verified": true
+    },
+    {
+      "id": "C07",
+      "name": "Conflicting outcomes without precedence",
+      "fixture": "contradiction",
+      "setup": {
+        "source_reviewed": true,
+        "role": "requester",
+        "status": "draft",
+        "units": 80
+      },
+      "actions": [
+        {
+          "actor": "requester",
+          "action": "submit"
+        },
+        {
+          "actor": "reviewer",
+          "action": "approve"
+        }
+      ],
+      "expected": {
+        "statuses": [
+          "pending",
+          "pending"
+        ],
+        "outcomes": [
+          "defined",
+          "needs_clarification"
+        ],
+        "must_show_rules": [
+          "R3",
+          "R6"
+        ],
+        "question_semantics": [
+          "Which of the conflicting approval outcomes has precedence?"
+        ],
+        "must_not_choose_rule_arbitrarily": true
+      },
+      "oracle": {
+        "type": "source rule interpretation fixed before product output",
+        "references": [
+          "contradiction:R1",
+          "contradiction:R3",
+          "contradiction:R6"
+        ]
+      },
+      "kind": "behavior",
+      "surfaces": [
+        "review",
+        "replay",
+        "guidance",
+        "export"
+      ],
+      "actual": null,
+      "verdict": "NOT_RUN",
+      "evidence": [],
+      "excluded_from_result_claims_until_verified": true
+    },
+    {
+      "id": "C08",
+      "name": "Terminal action is invalid, not a missing rule",
+      "fixture": "complete",
+      "setup": {
+        "source_reviewed": true,
+        "role": "requester",
+        "status": "draft",
+        "units": 80
+      },
+      "actions": [
+        {
+          "actor": "requester",
+          "action": "submit"
+        },
+        {
+          "actor": "reviewer",
+          "action": "approve"
+        },
+        {
+          "actor": "reviewer",
+          "action": "reject"
+        }
+      ],
+      "expected": {
+        "statuses": [
+          "pending",
+          "approved",
+          "approved"
+        ],
+        "outcomes": [
+          "defined",
+          "defined",
+          "forbidden"
+        ],
+        "gap_questions": 0,
+        "reason_rule": "R5"
+      },
+      "oracle": {
+        "type": "source rule interpretation fixed before product output",
+        "references": [
+          "complete:R1",
+          "complete:R3",
+          "complete:R5",
+          "complete:R2"
+        ]
+      },
+      "kind": "behavior",
+      "surfaces": [
+        "review",
+        "replay",
+        "guidance",
+        "export"
+      ],
+      "actual": null,
+      "verdict": "NOT_RUN",
+      "evidence": [],
+      "excluded_from_result_claims_until_verified": true
+    },
+    {
+      "id": "C09",
+      "name": "Out-of-scope external payment request",
+      "fixture": "unsupported",
+      "setup": {
+        "input": "unsupported fixture pasted into Document; no replay created"
+      },
+      "actions": [
+        {
+          "action": "submit document to supported-scope check; no payment API call or fake payment button required"
+        }
+      ],
+      "expected": {
+        "classification": "unsupported",
+        "replay_label": "Out of scope",
+        "business_state": null,
+        "replay_enabled": false,
+        "external_requests_to_business_systems": 0,
+        "gap_questions": 0,
+        "no_added_policy": true
+      },
+      "oracle": {
+        "type": "explicit product support exclusion plus unsupported source requirement",
+        "references": [
+          "unsupported:scope",
+          "product-spec-current.md:입력과 최초 지원 범위 제안"
+        ]
+      },
+      "kind": "support_boundary",
+      "surfaces": [
+        "review"
+      ],
+      "actual": null,
+      "verdict": "NOT_RUN",
+      "evidence": [],
+      "excluded_from_result_claims_until_verified": true
+    },
+    {
+      "id": "C10",
+      "name": "Reviewer detects dropped documented rule",
+      "fixture": "complete",
+      "setup": {
+        "source_reviewed": false,
+        "role": "requester",
+        "status": "draft",
+        "units": 80,
+        "fault_injection": "extraction omits R3; human comparison identifies omission"
+      },
+      "actions": [
+        {
+          "action": "inspect extraction against source"
+        }
+      ],
+      "expected": {
+        "classification": "extraction_error",
+        "replay_enabled": false,
+        "gap_questions": 0,
+        "source_unchanged": true,
+        "recovery": "re-extract or correct mapping and review again",
+        "must_not_claim_automatic_semantic_detection": true
+      },
+      "oracle": {
+        "type": "product requirement / controlled fault injection",
+        "references": [
+          "complete:R3",
+          "product-spec-current.md:AI·코드·사람의 책임"
+        ]
+      },
+      "kind": "fault_injection",
+      "surfaces": [
+        "review",
+        "replay",
+        "guidance",
+        "export"
+      ],
+      "actual": null,
+      "verdict": "NOT_RUN",
+      "evidence": [],
+      "excluded_from_result_claims_until_verified": true
+    },
+    {
+      "id": "C11",
+      "name": "Fabricated citation fails validation",
+      "fixture": "complete",
+      "setup": {
+        "source_reviewed": false,
+        "role": "requester",
+        "status": "draft",
+        "units": 80,
+        "fault_injection": "provider stub returns the same fabricated quote or out-of-range offsets on all three extraction attempts; no successful repair response"
+      },
+      "actions": [
+        {
+          "action": "validate source evidence"
+        }
+      ],
+      "expected": {
+        "classification": "model_error",
+        "replay_enabled": false,
+        "source_unchanged": true,
+        "gap_questions": 0,
+        "no_success_guidance": true,
+        "provider_calls": 3,
+        "fourth_call_permitted": false,
+        "failure_layer": "source-provenance validation; final extraction remains unverified"
+      },
+      "oracle": {
+        "type": "product requirement / controlled fault injection",
+        "references": [
+          "product-spec-current.md:AI·코드·사람의 책임",
+          "product-spec-current.md:승인된 구조 수정의 경계"
+        ]
+      },
+      "kind": "fault_injection",
+      "surfaces": [
+        "review",
+        "replay",
+        "guidance",
+        "export"
+      ],
+      "actual": null,
+      "verdict": "NOT_RUN",
+      "evidence": [],
+      "excluded_from_result_claims_until_verified": true
+    },
+    {
+      "id": "C12",
+      "name": "Provider timeout is not a business gap",
+      "fixture": "complete",
+      "setup": {
+        "source_reviewed": false,
+        "role": "requester",
+        "status": "draft",
+        "units": 80,
+        "fault_injection": "provider timeout before extraction finishes"
+      },
+      "actions": [
+        {
+          "action": "start extraction A; hold its response"
+        },
+        {
+          "action": "edit document to version B and start extraction B"
+        },
+        {
+          "action": "deliver stale response A; it must not overwrite B"
+        },
+        {
+          "action": "timeout B; preserve B source and show retry"
+        }
+      ],
+      "expected": {
+        "classification": "infra_error",
+        "source_unchanged": "current B source preserved; no A-to-B overwrite",
+        "status": "no business replay created",
+        "guidance_not_advanced": true,
+        "gap_questions": 0,
+        "recovery": "explicit retry preserving source; stale response cannot overwrite newer request",
+        "automatic_provider_retries_after_timeout": 0
+      },
+      "oracle": {
+        "type": "product requirement / controlled fault injection",
+        "references": [
+          "product-spec-current.md:다섯 가지 결과를 구분한다",
+          "product-spec-current.md:승인된 구조 수정의 경계"
+        ]
+      },
+      "kind": "fault_injection",
+      "surfaces": [
+        "review",
+        "replay",
+        "guidance",
+        "export"
+      ],
+      "actual": null,
+      "verdict": "NOT_RUN",
+      "evidence": [],
+      "excluded_from_result_claims_until_verified": true
+    },
+    {
+      "id": "C13",
+      "name": "Reset preserves source review, not invented resolution",
+      "fixture": "missing-outcome",
+      "setup": {
+        "checkpoint": "C06 end",
+        "status": "pending",
+        "unresolved_question_present": true
+      },
+      "actions": [
+        {
+          "action": "reset replay"
+        }
+      ],
+      "expected": {
+        "new_status": "draft",
+        "new_trace": [],
+        "source_and_review_preserved": true,
+        "existing_question_not_auto_resolved": true,
+        "no_real_system_write": true
+      },
+      "oracle": {
+        "type": "product requirement / controlled fault injection",
+        "references": [
+          "product-spec-current.md:처음부터 끝까지의 개념 흐름"
+        ]
+      },
+      "kind": "state_invariant",
+      "surfaces": [
+        "review",
+        "replay",
+        "guidance",
+        "export"
+      ],
+      "actual": null,
+      "verdict": "NOT_RUN",
+      "evidence": [],
+      "excluded_from_result_claims_until_verified": true
+    },
+    {
+      "id": "C14",
+      "name": "Export reproduces actual trace, not a promised path",
+      "fixture": "missing-outcome",
+      "setup": {
+        "checkpoint": "C06 end",
+        "status": "pending"
+      },
+      "actions": [
+        {
+          "action": "review and export Markdown"
+        }
+      ],
+      "expected": {
+        "required_fields": [
+          "source identity and hash",
+          "authored synthetic origin",
+          "source review status",
+          "initial state and units",
+          "performed submit -> pending",
+          "attempted approve -> needs clarification; status still pending",
+          "exact related source span and rule id",
+          "question requesting missing destination state",
+          "user-added content separated from source evidence"
+        ],
+        "must_not_include": [
+          "invented successful approve",
+          "all empty state-event pairs as defects",
+          "unperformed steps",
+          "external customer data"
+        ],
+        "question_wording": "semantic equivalence permitted; literal phrase matching not required",
+        "separate_UI_check": "Question draft can be reviewed/edited before explicit add; Markdown editability is not the UI test."
+      },
+      "oracle": {
+        "type": "product requirement / controlled fault injection",
+        "references": [
+          "missing-outcome:R1",
+          "missing-outcome:R3",
+          "product-spec-current.md:사용자와 완료 결과"
+        ]
+      },
+      "kind": "export_invariant",
+      "surfaces": [
+        "review",
+        "replay",
+        "guidance",
+        "export"
+      ],
+      "actual": null,
+      "verdict": "NOT_RUN",
+      "evidence": [],
+      "excluded_from_result_claims_until_verified": true
+    },
+    {
+      "id": "C15",
+      "name": "Empty input cannot create a successful replay",
+      "fixture": null,
+      "setup": {
+        "input_text": ""
+      },
+      "actions": [
+        {
+          "action": "request extraction"
+        }
+      ],
+      "expected": {
+        "classification": "invalid_input",
+        "provider_calls": 0,
+        "replay_enabled": false,
+        "gap_questions": 0,
+        "recovery": "request nonempty supported document",
+        "business_state": null
+      },
+      "oracle": {
+        "type": "product requirement / controlled fault injection",
+        "references": [
+          "product-spec-current.md:입력과 최초 지원 범위 제안"
+        ]
+      },
+      "kind": "input_boundary",
+      "surfaces": [
+        "review",
+        "replay",
+        "guidance",
+        "export"
+      ],
+      "actual": null,
+      "verdict": "NOT_RUN",
+      "evidence": [],
+      "excluded_from_result_claims_until_verified": true
+    },
+    {
+      "id": "C16",
+      "name": "No advance on unreviewed mapping or unfinished action",
+      "fixture": "complete",
+      "setup": {
+        "source_reviewed": false,
+        "role": "requester",
+        "status": "draft",
+        "units": 80
+      },
+      "actions": [
+        {
+          "action": "activate start before human review; must remain blocked"
+        },
+        {
+          "action": "start an authorized extraction, hold provider response, attempt duplicate start; success trace and guidance cannot advance"
+        },
+        {
+          "action": "if a guidance target has not rendered, keep current step until target and business result are ready"
+        }
+      ],
+      "expected": {
+        "replay_enabled": false,
+        "status": "draft",
+        "guidance_not_advanced": true,
+        "no_trace_of_success": true,
+        "no_external_requests": true
+      },
+      "oracle": {
+        "type": "product requirement / controlled fault injection",
+        "references": [
+          "product-spec-current.md:처음부터 끝까지의 개념 흐름",
+          "product-spec-current.md:AI·코드·사람의 책임"
+        ]
+      },
+      "kind": "state_invariant",
+      "surfaces": [
+        "review",
+        "replay",
+        "guidance",
+        "export"
+      ],
+      "actual": null,
+      "verdict": "NOT_RUN",
+      "evidence": [],
+      "excluded_from_result_claims_until_verified": true
+    },
+    {
+      "id": "C17",
+      "name": "Inclusive numeric boundary is approved",
+      "fixture": "complete",
+      "setup": {
+        "source_reviewed": true,
+        "role": "requester",
+        "status": "draft",
+        "units": 100
+      },
+      "actions": [
+        {
+          "actor": "requester",
+          "action": "submit"
+        },
+        {
+          "actor": "reviewer",
+          "action": "approve"
+        }
+      ],
+      "expected": {
+        "statuses": [
+          "pending",
+          "approved"
+        ],
+        "outcomes": [
+          "defined",
+          "defined"
+        ],
+        "gap_questions": 0
+      },
+      "oracle": {
+        "type": "source rule interpretation fixed before product output",
+        "references": [
+          "complete:R1",
+          "complete:R3",
+          "complete:R2"
+        ]
+      },
+      "kind": "behavior",
+      "surfaces": [
+        "review",
+        "replay",
+        "guidance",
+        "export"
+      ],
+      "actual": null,
+      "verdict": "NOT_RUN",
+      "evidence": [],
+      "excluded_from_result_claims_until_verified": true
+    },
+    {
+      "id": "C18",
+      "name": "Noninteger units cannot be silently rounded",
+      "fixture": "complete",
+      "setup": {
+        "source_reviewed": true,
+        "role": "requester",
+        "status": "draft",
+        "units": 80.5
+      },
+      "actions": [
+        {
+          "actor": "requester",
+          "action": "submit"
+        }
+      ],
+      "expected": {
+        "classification": "invalid_input",
+        "status": "draft",
+        "no_rounding": true,
+        "gap_questions": 0
+      },
+      "oracle": {
+        "type": "product requirement / controlled fault injection",
+        "references": [
+          "complete:scope"
+        ]
+      },
+      "kind": "input_boundary",
+      "surfaces": [
+        "review",
+        "replay",
+        "guidance",
+        "export"
+      ],
+      "actual": null,
+      "verdict": "NOT_RUN",
+      "evidence": [],
+      "excluded_from_result_claims_until_verified": true
+    },
+    {
+      "id": "C19",
+      "name": "Repair loop is bounded and evidence-bound",
+      "fixture": "complete",
+      "setup": {
+        "fault_injection": "validation fails on every provider response",
+        "source_reviewed": false
+      },
+      "actions": [
+        {
+          "action": "extract with repair loop"
+        }
+      ],
+      "expected": {
+        "maximum_total_attempts": 3,
+        "includes_initial_attempt": true,
+        "source_unchanged": true,
+        "every_attempt_logged": true,
+        "exhaustion": "unverified extraction; do not execute affected rules",
+        "no_business_gap_claim": true,
+        "no_silent_drop_into_out_of_scope": true,
+        "fourth_call_permitted": false,
+        "early_stop_after_validated_success": true,
+        "no_policy_condition_outcome_mutation": true,
+        "human_meaning_review_required": true,
+        "provider_calls_when_all_attempts_fail": 3,
+        "classification": "model_error"
+      },
+      "oracle": {
+        "type": "user-approved normative product specification plus frozen synthetic control",
+        "references": [
+          "product-spec-current.md:승인된 구조 수정의 경계",
+          "complete:scope"
+        ],
+        "status": "DEFINED_BEFORE_EXECUTION_AFTER_USER_AUTHORIZATION"
+      },
+      "kind": "verification_loop_or_question_guardrail",
+      "surfaces": [
+        "review",
+        "replay",
+        "guidance",
+        "export"
+      ],
+      "actual": null,
+      "verdict": "NOT_RUN",
+      "evidence": [],
+      "excluded_from_result_claims_until_verified": true
+    },
+    {
+      "id": "C20",
+      "name": "Correct citation is not correct rule meaning",
+      "fixture": "complete",
+      "setup": {
+        "fault_injection": "valid literal R3 citation but extracted approval condition inverted to units >= 100",
+        "source_reviewed": false,
+        "human_review": "human compares condition to R3 and rejects mapping"
+      },
+      "actions": [
+        {
+          "action": "validate citation and inspect meaning"
+        }
+      ],
+      "expected": {
+        "semantic_approval": false,
+        "replay_enabled": false,
+        "classification": "extraction_error",
+        "gap_questions": 0,
+        "must_not_claim_code_automatically_detects_all_semantic_errors": true,
+        "literal_citation_check": "passes for exact R3 quote with valid source span",
+        "meaning_review_state": "separate incomplete/rejected state; not automatically verified"
+      },
+      "oracle": {
+        "type": "user-provided design plus product specification; GPT-defined operational bound",
+        "references": [
+          "complete:R3",
+          "product-spec-current.md:AI·코드·사람의 책임"
+        ]
+      },
+      "kind": "verification_loop_or_question_guardrail",
+      "surfaces": [
+        "review",
+        "replay",
+        "guidance",
+        "export"
+      ],
+      "actual": null,
+      "verdict": "NOT_RUN",
+      "evidence": [],
+      "excluded_from_result_claims_until_verified": true
+    },
+    {
+      "id": "C21",
+      "name": "Successful repair is fully revalidated before review",
+      "fixture": "complete",
+      "setup": {
+        "fault_injection": "first output has invalid reference; revised output repairs reference",
+        "source_reviewed": false
+      },
+      "actions": [
+        {
+          "action": "revalidate entire revised graph and source spans"
+        },
+        {
+          "action": "present meaning review to human"
+        }
+      ],
+      "expected": {
+        "source_unchanged": true,
+        "all_references_and_quotes_rechecked": true,
+        "replay_enabled_before_human_review": false,
+        "no_semantically_verified_badge_from_structure_alone": true,
+        "source_and_output_version_bound": true,
+        "no_policy_condition_outcome_mutation": true,
+        "human_meaning_review_required": true,
+        "provider_calls_for_first_invalid_then_valid": 2,
+        "third_call_permitted_after_second_valid": false
+      },
+      "oracle": {
+        "type": "user-approved normative product specification plus frozen synthetic control",
+        "references": [
+          "product-spec-current.md:승인된 구조 수정의 경계",
+          "complete:scope"
+        ],
+        "status": "DEFINED_BEFORE_EXECUTION_AFTER_USER_AUTHORIZATION"
+      },
+      "kind": "verification_loop_or_question_guardrail",
+      "surfaces": [
+        "review",
+        "replay",
+        "guidance",
+        "export"
+      ],
+      "actual": null,
+      "verdict": "NOT_RUN",
+      "evidence": [],
+      "excluded_from_result_claims_until_verified": true
+    },
+    {
+      "id": "C22",
+      "name": "Question provider failure preserves business context",
+      "fixture": "missing-outcome",
+      "setup": {
+        "checkpoint": "C06 end",
+        "question_provider": "optional Flash or configured model",
+        "fault_injection": "question generation times out"
+      },
+      "actions": [
+        {
+          "action": "generate question draft"
+        }
+      ],
+      "expected": {
+        "status": "pending",
+        "business_outcome": "needs_clarification",
+        "question_generation_outcome": "infra_error",
+        "trace_and_evidence_preserved": true,
+        "question_list_auto_additions": 0,
+        "recovery": [
+          "manual question editing",
+          "explicit retry"
+        ],
+        "no_mandatory_Flash_adoption": true,
+        "automatic_question_generation_retries": 0,
+        "question_provider_calls_before_explicit_user_retry": 1
+      },
+      "oracle": {
+        "type": "user-provided design plus product specification; GPT-defined operational bound",
+        "references": [
+          "demo-criteria-spec-gap-v1.md:Questions: 초안과 확정 질문을 분리",
+          "missing-outcome:R3",
+          "product-spec-current.md:승인된 구조 수정의 경계"
+        ]
+      },
+      "kind": "verification_loop_or_question_guardrail",
+      "surfaces": [
+        "review",
+        "replay",
+        "guidance",
+        "export"
+      ],
+      "actual": null,
+      "verdict": "NOT_RUN",
+      "evidence": [],
+      "excluded_from_result_claims_until_verified": true
+    },
+    {
+      "id": "C23",
+      "name": "Human owns adding question to confirmed list",
+      "fixture": "missing-outcome",
+      "setup": {
+        "checkpoint": "C06 end",
+        "draft_question_present": true
+      },
+      "actions": [
+        {
+          "action": "inspect or edit draft"
+        },
+        {
+          "action": "explicitly add question"
+        }
+      ],
+      "expected": {
+        "draft_not_added_before_user_action": true,
+        "confirmed_question_retains_actual_trace_and_source": true,
+        "edited_content_marked_as_user_content": true,
+        "generated_policy_not_executed": true,
+        "semantic_question_criterion": "asks the unresolved resulting status rather than supplying an invented answer"
+      },
+      "oracle": {
+        "type": "user-provided design plus product specification; GPT-defined operational bound",
+        "references": [
+          "demo-criteria-spec-gap-v1.md:Questions: 초안과 확정 질문을 분리",
+          "missing-outcome:R3"
+        ]
+      },
+      "kind": "verification_loop_or_question_guardrail",
+      "surfaces": [
+        "review",
+        "replay",
+        "guidance",
+        "export"
+      ],
+      "actual": null,
+      "verdict": "NOT_RUN",
+      "evidence": [],
+      "excluded_from_result_claims_until_verified": true
+    },
+    {
+      "id": "C24",
+      "name": "Conflict outside active guard is not a gap",
+      "fixture": "contradiction",
+      "setup": {
+        "source_reviewed": true,
+        "role": "requester",
+        "status": "draft",
+        "units": 101
+      },
+      "actions": [
+        {
+          "actor": "requester",
+          "action": "submit"
+        },
+        {
+          "actor": "reviewer",
+          "action": "approve"
+        }
+      ],
+      "expected": {
+        "statuses": [
+          "pending",
+          "pending"
+        ],
+        "outcomes": [
+          "defined",
+          "forbidden"
+        ],
+        "gap_questions": 0,
+        "only_applicable_guards_considered": true,
+        "reason_rule": "R3"
+      },
+      "oracle": {
+        "type": "direct interpretation of synthetic normative source, not model opinion",
+        "references": [
+          "contradiction:R1",
+          "contradiction:R2",
+          "contradiction:R3",
+          "contradiction:R6"
+        ]
+      },
+      "kind": "overdetection_control",
+      "surfaces": [
+        "review",
+        "replay",
+        "guidance",
+        "export"
+      ],
+      "actual": null,
+      "verdict": "NOT_RUN",
+      "evidence": [],
+      "excluded_from_result_claims_until_verified": true
+    },
+    {
+      "id": "C25",
+      "name": "Unspecified approval does not poison defined rejection",
+      "fixture": "missing-outcome",
+      "setup": {
+        "source_reviewed": true,
+        "role": "requester",
+        "status": "draft",
+        "units": 80
+      },
+      "actions": [
+        {
+          "actor": "requester",
+          "action": "submit"
+        },
+        {
+          "actor": "reviewer",
+          "action": "reject"
+        }
+      ],
+      "expected": {
+        "statuses": [
+          "pending",
+          "rejected"
+        ],
+        "outcomes": [
+          "defined",
+          "defined"
+        ],
+        "gap_questions": 0,
+        "only_applicable_guards_considered": true
+      },
+      "oracle": {
+        "type": "direct interpretation of synthetic normative source, not model opinion",
+        "references": [
+          "missing-outcome:R1",
+          "missing-outcome:R2",
+          "missing-outcome:R4"
+        ]
+      },
+      "kind": "overdetection_control",
+      "surfaces": [
+        "review",
+        "replay",
+        "guidance",
+        "export"
+      ],
+      "actual": null,
+      "verdict": "NOT_RUN",
+      "evidence": [],
+      "excluded_from_result_claims_until_verified": true
+    },
+    {
+      "id": "C26",
+      "name": "Unspecified approval outcome does not override explicit prohibition",
+      "fixture": "missing-outcome",
+      "setup": {
+        "source_reviewed": true,
+        "role": "requester",
+        "status": "draft",
+        "units": 101
+      },
+      "actions": [
+        {
+          "actor": "requester",
+          "action": "submit"
+        },
+        {
+          "actor": "reviewer",
+          "action": "approve"
+        }
+      ],
+      "expected": {
+        "statuses": [
+          "pending",
+          "pending"
+        ],
+        "outcomes": [
+          "defined",
+          "forbidden"
+        ],
+        "gap_questions": 0,
+        "only_applicable_guards_considered": true
+      },
+      "oracle": {
+        "type": "direct interpretation of synthetic normative source, not model opinion",
+        "references": [
+          "missing-outcome:R1",
+          "missing-outcome:R2",
+          "missing-outcome:R3"
+        ]
+      },
+      "kind": "overdetection_control",
+      "surfaces": [
+        "review",
+        "replay",
+        "guidance",
+        "export"
+      ],
+      "actual": null,
+      "verdict": "NOT_RUN",
+      "evidence": [],
+      "excluded_from_result_claims_until_verified": true
+    }
+  ],
+  "tolerances": {
+    "state_role_units_rule_ids": "exact match; no tolerance",
+    "source_hash_and_offsets": "exact byte hash and valid agreed string-index spans; encoding unit must be recorded",
+    "question_and_explanation": "semantic equivalence allowed; must ask the unresolved decision and not answer it",
+    "coverage": "all mandatory cases; no treating skips as passes",
+    "performance": "no measured latency target claimed; caller timeout must produce explicit recoverable infra_error"
+  },
+  "global_invariants": [
+    "Original source bytes are immutable within a run.",
+    "Uncertainty, denial and support boundaries never invent a business-state transition.",
+    "Human additions remain distinct from document-derived statements.",
+    "No model-generated executable code is evaluated.",
+    "No real payment, email, calendar or external business-system writes.",
+    "Document/model/review version binding invalidates stale mappings after source edits.",
+    "Independent expected values are not rewritten to fit actual results."
+  ],
+  "real_input_scenario": {
+    "status": "INDEPENDENT_ORACLES_FROZEN_PRODUCT_NOT_RUN",
+    "contract": "demo-github-deployments-v1.json",
+    "input": {
+      "path": "demo-reference/github-deployments-v1/input.md",
+      "sha256": "a6a85c8a158dc55e54f58f315fe3bf0e9b3e7a5c3ecd7823590764a0cb2c7790",
+      "characters": 20089,
+      "bytes": 20089
+    },
+    "source_commit": "cb051611377a0d2904411e6157154e9b4953d870",
+    "required_real_cases": 8,
+    "actual": null,
+    "verdict": "NOT_RUN",
+    "source_provenance": "Pinned GitHub Docs original raw bytes independently retrieved, license attributed and interpreted before product output.",
+    "review": {
+      "status": "APPROVE",
+      "scope": "G01-G08 source-derived criteria only; GD01 non-gating diagnostic; no automatic real-gap claim",
+      "model": "claude-opus-5-5",
+      "session_id": "ec123774-426d-46e9-9414-be03291f27cb",
+      "report": "demo-reference/github-deployments-v1/claude-oracle-review.md",
+      "reviewed_oracle_sha256": "9574ac87dc5037c855a2d804958a4fecab7a2898be1031ce8935fbc445a7fa47",
+      "only_review_metadata_changed_after_recheck": true,
+      "parent_hash_span_and_corpus_integrity_checks": "passed",
+      "is_not_oracle": true
+    },
+    "automatic_real_document_gap_discovery": "UNVERIFIED; do not claim a supported Replay action exposed a missing destination in this corpus.",
+    "diagnostic": "GD01 is source-scope analysis only, not a gating Replay case.",
+    "prior_selection_state": {
+      "status": "UNVERIFIED",
+      "mandatory_before_real_document_success_claim": true,
+      "reason": "A synchronized parallel record reports user selection of GitHub Docs deployment review. GPT has not yet independently fixed the exact source corpus, hashes and real-input expected values; this scenario remains UNVERIFIED.",
+      "unfixed_fields": [
+        "exact selected source corpus and independently checked content hashes",
+        "human-confirmed supported actions and reachable paths",
+        "independent source interpretation and expected outcome"
+      ],
+      "selection_record": "demo-real-input-candidates-2026-10-16.md",
+      "selected_candidate": "GitHub Docs deployment approval/review documentation",
+      "selection_provenance": "reported user choice in synchronized repository record; source content and real-input oracle not verified in this bounded approval task",
+      "prior_candidate_question": "Whether a changed confirmation policy applies to already pending bookings must not be called a confirmed product defect."
+    }
+  },
+  "live_integration_gate": {
+    "status": "NOT_RUN",
+    "required_for_event_claim": [
+      "real Google AI response used in product path, with model/session/config and sanitized request/response evidence",
+      "Google Cloud deployed app exercised using the same frozen inputs and downloaded export",
+      "UI changing only labels or using hardcoded successful model output cannot satisfy document-to-behavior claim"
+    ],
+    "no_secrets_in_evidence": true,
+    "fallback": "Local/mock may diagnose mechanics but cannot replace required live Google AI / Google Cloud evidence."
+  },
+  "verdict_policy": {
+    "initial": "NOT_RUN",
+    "PASS": "All expected values and invariants met on identified source/config with actual evidence.",
+    "PRODUCT FAIL": "Valid oracle; execution available; product behavior violates expectation.",
+    "MODEL ERROR": "Invalid/unsupported extraction or fabricated evidence; never reclassify as a document gap.",
+    "INFRA ERROR": "Network/quota/timeout/environment execution failure; not business gap.",
+    "ORACLE INVALID": "Reference itself incorrect or unsupported; quarantine scenario.",
+    "UNVERIFIED": "Evidence or independent oracle insufficient.",
+    "precedence": "Record layer-specific failures: rejecting an injected bad model output can PASS the guardrail check while the injected extraction remains MODEL ERROR. A real end-to-end model error is not a successful business replay.",
+    "no_retroactive_rehabilitation": "A corrected invalid oracle cannot revive the same scenario as an event PASS; preserve prior version and explain limits."
+  },
+  "evidence_required_per_case": [
+    "source + fixture hash",
+    "product commit / deployed artifact + configuration",
+    "reviewed mapping + citations + model call identity when relevant",
+    "setup and performed/attempted input trace",
+    "before/after state + guidance position",
+    "export artifact for export checks",
+    "expected comparison and layer-specific failure classification"
+  ],
+  "rerun_protocol": [
+    "Select immutable fixture and verify hashes.",
+    "Start isolated single-request run with stated initial state/units; no production integrations.",
+    "Capture extraction and review; exercise named actions in order.",
+    "Collect actual states, guidance, citations and downloaded export before comparison.",
+    "Compare against this contract without editing expected; retain failed attempts.",
+    "Reset and repeat the same input; source review stays intact; pending questions are not auto-resolved."
+  ],
+  "presentation_exclusions": [
+    "All NOT_RUN/UNVERIFIED results and static screens are excluded from executed success claims.",
+    "Synthetic controls do not prove actual user demand or real PRD completeness.",
+    "No measured time saving, learned domain understanding, gap detection accuracy, winning odds or frontier-model necessity claim.",
+    "Past archive app tests and old demo-contract.json do not apply."
+  ],
+  "review": {
+    "claude_spec_and_testability_review": "APPROVE_CORE_CRITERIA_ONLY",
+    "review_is_not_oracle": true,
+    "user_detailed_domain_and_visual_approval": "PENDING",
+    "model": "claude-opus-5-5",
+    "session_id": "5188a4c2-6f38-498f-9e50-4a944edf4f6f",
+    "report": "demo-reference/spec-gap-v1/claude-criteria-recheck-2026-10-16.md",
+    "reviewed_revision": "v1-draft4; final status/review/source-hash metadata updated afterward; parallel approval history preserved without changing reviewed normative section",
+    "findings_disposition": {
+      "B1": "C22/C23 input bindings corrected and rechecked",
+      "B2": "user-approved bounded repair mirrored in normative spec and rechecked",
+      "B3": "classification/layer mapping and unsupported-input control rechecked",
+      "followup_C11": "persistent-invalid responses and exact 3 calls fixed before recheck",
+      "followup_C12_C22": "zero automatic infra/question retries checked"
+    },
+    "model_provenance_note": "Actual CLI init and completed result verified; tool events were Read/Glob only. Review is not an oracle or product execution.",
+    "previous_reviews": [
+      {
+        "claude_spec_and_testability_review": "CHANGES_REQUIRED; mechanical B1/B3 fixed by GPT; retry-policy B2 awaits user; no reapproval claimed",
+        "review_is_not_oracle": true,
+        "user_detailed_domain_and_visual_approval": "PENDING",
+        "model": "claude-opus-5-5",
+        "session_id": "c5980c15-5a81-4bb1-9e6a-2adca5661617",
+        "report": "demo-reference/spec-gap-v1/claude-criteria-review.md",
+        "reviewed_revision": "v1-draft1; pre-fix hashes retained in scratch",
+        "findings_disposition": {
+          "B1": "C22/C23 source binding corrected to missing-outcome",
+          "B2": "C19/C21 UNVERIFIED, awaiting explicit policy decision; exact-attempt assertion clarified",
+          "B3": "layer and label mapping added; unsupported doc input replaces nonexistent payment action"
+        },
+        "model_provenance_note": "CLI initialization and successful completed result confirmed; this review is not an oracle or product execution."
+      }
+    ],
+    "reviewed_contract_sha256": "7e473c59995bd76e1aefde9cf876a8e1475305d093779d2c929e3b4affd4ad34",
+    "fixture_and_spec_hash_verification": "parent checked; exact reviewer copy equality verified"
+  },
+  "surfaces_design_provenance": {
+    "source": "user-provided Claude design summary, Discord1560481828467380289",
+    "observed_scope": "summary text only; no design file, rendered UI or implementation inspected",
+    "four_stages": [
+      "Document",
+      "Verify",
+      "Replay",
+      "Questions"
+    ],
+    "design_approval": "PENDING"
+  },
+  "verification_loop": {
+    "maximum_total_attempts": 3,
+    "count_includes_initial": true,
+    "attempt_budget_origin": "user-approved engineering bound, not measured optimum",
+    "each_attempt_records": [
+      "source hash",
+      "extraction version",
+      "validation errors",
+      "validated revised output"
+    ],
+    "structural_validation_does_not_establish_semantic_correctness": true,
+    "exhaustion": "mark affected extraction unverified/error; exclude from execution without asserting document gap",
+    "source_mutation_for_repair": "forbidden",
+    "status": "USER_APPROVED",
+    "authorization": {
+      "message_id": "1560485301275729943",
+      "date": "2026-10-16",
+      "scope": "bounded automatic citation/reference repair only; total 3 including initial; never change source or business policy",
+      "not_authorized": [
+        "app implementation",
+        "UI design approval",
+        "real model or Cloud execution",
+        "submission"
+      ]
+    },
+    "normative_source": "product-spec-current.md:승인된 구조 수정의 경계",
+    "policy_condition_outcome_mutation": "forbidden",
+    "infrastructure_business_action_and_question_generation_auto_retry": "not authorized by this exception"
+  },
+  "criteria_revision": "v1; approved bounded structural repair; core conformance criteria frozen before product execution",
+  "classification_mapping": {
+    "defined": {
+      "layer": "business",
+      "replay_label": "Defined"
+    },
+    "forbidden": {
+      "layer": "business",
+      "replay_label": "Blocked by document",
+      "requires": "explicit source prohibition or unmet condition"
+    },
+    "needs_clarification": {
+      "layer": "business",
+      "replay_label": "Needs decision",
+      "requires": "supported reachable action and human-reviewed source uncertainty, not extraction failure"
+    },
+    "unsupported": {
+      "layer": "product_support",
+      "replay_label": "Out of scope",
+      "priority": "apply product support boundary before attempting business-rule execution"
+    },
+    "invalid_input": {
+      "layer": "input_validation",
+      "replay_label": null,
+      "display": "Input validation message; replay not started; do not invent a sixth business result"
+    },
+    "extraction_error": {
+      "layer": "model_semantics",
+      "replay_label": null,
+      "display": "Unverified mapping / meaning review required on Verify; if encountered during replay show Error with subtype",
+      "definition": "human identifies an omitted or misinterpreted documented rule"
+    },
+    "model_error": {
+      "layer": "model_structure_or_provenance",
+      "replay_label": "Error",
+      "definition": "invalid structure, source citation or reference"
+    },
+    "infra_error": {
+      "layer": "infrastructure",
+      "replay_label": "Error",
+      "definition": "timeout, network, quota or environment failure, not document gap"
+    }
+  },
+  "criteria_change_history": [
+    {
+      "authorization": {
+        "message_id": "1560485301275729943",
+        "date": "2026-10-16",
+        "scope": "bounded automatic citation/reference repair only; total 3 including initial; never change source or business policy",
+        "not_authorized": [
+          "app implementation",
+          "UI design approval",
+          "real model or Cloud execution",
+          "submission"
+        ]
+      },
+      "previous_status": "PARTIAL_CORE_CRITERIA_FIXED_RETRY_POLICY_AND_REAL_INPUT_UNRESOLVED",
+      "before_product_execution": true,
+      "actuals_still_null": true,
+      "change": "C19/C21 policy uncertainty resolved; no tested failed/invalid oracle or result promoted to PASS; all unrelated expected values unchanged"
+    },
+    {
+      "before_product_execution": true,
+      "change": "C11 persistent-invalid injection across all 3 attempts; C12/C22 zero automatic retries for timeout/question generation; mirrors already approved constraints, no acceptance relaxation",
+      "prior_review": "5188a4c2-6f38-498f-9e50-4a944edf4f6f CHANGES_REQUIRED",
+      "actuals_still_null": true
+    }
+  ]
+}
