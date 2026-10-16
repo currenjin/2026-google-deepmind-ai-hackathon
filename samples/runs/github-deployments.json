@@ -5,10 +5,10 @@
     {
       "n": 1,
       "source_hash": "a6a85c8a158dc55e54f58f315fe3bf0e9b3e7a5c3ecd7823590764a0cb2c7790",
-      "interaction_id": "v1_ChZXWnpSYXVpUUlfbXQxZThQMXRheE1REhZXWnpSYXVpUUlfbXQxZThQMXRheE1R",
+      "interaction_id": "v1_ChdjcDNSYW9pYk5ZcTEycm9QbHZxNHdBZxIXY3AzUmFvaWJOWXExMnJvUGx2cTR3QWc",
       "model": "gemini-4-argon",
-      "ms": 21108,
-      "checks": 111,
+      "ms": 16471,
+      "checks": 113,
       "failed": 0,
       "errors": []
     }
@@ -16,35 +16,51 @@
   "model": {
     "variables": [
       {
-        "id": "job_status",
-        "label": "Job status",
+        "id": "job_state",
+        "label": "Job state",
         "values": [
           "pending",
+          "approved",
           "proceeding",
           "failed"
         ],
         "initial": "pending"
+      },
+      {
+        "id": "secrets_access",
+        "label": "Environment secrets access",
+        "values": [
+          "unavailable",
+          "accessible"
+        ],
+        "initial": "unavailable"
       }
     ],
     "settings": [
       {
-        "id": "prevent_self_review",
-        "label": "Prevent self-review",
-        "quote": "Optionally, to prevent users from approving workflows runs that they triggered, select **Prevent self-review**.",
-        "line": 204
+        "id": "other_protection_rules_passed",
+        "label": "Other deployment protection rules have passed",
+        "quote": "Once a job is approved (and any other deployment protection rules have passed), the job will proceed.",
+        "line": 21
       },
       {
-        "id": "allow_admin_bypass",
-        "label": "Allow administrators to bypass configured protection rules",
-        "quote": "By default, administrators can bypass the protection rules and force deployments to specific environments.",
-        "line": 109
+        "id": "prevent_self_review",
+        "label": "Prevent self-reviews for deployments",
+        "quote": "You also have the option to prevent self-reviews for deployments to protected environments.",
+        "line": 62
+      },
+      {
+        "id": "prevent_admin_bypass",
+        "label": "Prevent admins from bypassing configured protection rules",
+        "quote": "You cannot bypass deployment protection rules if the environment has been configured to prevent admins from bypassing configured protection rules.",
+        "line": 32
       }
     ],
     "roles": [
       {
         "id": "required_reviewer",
         "label": "Required reviewer",
-        "quote": "Use required reviewers to require a specific person or team to approve workflow jobs that reference the environment.",
+        "quote": "Only one of the required reviewers needs to approve the job for it to proceed.",
         "line": 60
       },
       {
@@ -62,22 +78,7 @@
         "line": 25
       }
     ],
-    "inputs": [
-      {
-        "id": "wait_timer",
-        "label": "Wait timer (minutes)",
-        "type": "integer",
-        "quote": "The time (in minutes) must be an integer between 1 and 43,200 (30 days).",
-        "line": 75
-      },
-      {
-        "id": "comment",
-        "label": "Leave a comment",
-        "type": "text",
-        "quote": "Under **Leave a comment**, enter a description for bypassing the deployment protection rules.",
-        "line": 39
-      }
-    ],
+    "inputs": [],
     "actions": [
       {
         "id": "approve_and_deploy",
@@ -89,36 +90,62 @@
       },
       {
         "id": "bypass_protection_rules",
-        "label": "I understand the consequences, start deploying"
+        "label": "Start all waiting jobs"
       },
       {
         "id": "delete_environment",
-        "label": "I understand, delete this environment"
-      },
-      {
-        "id": "save_protection_rules",
-        "label": "Save protection rules"
+        "label": "Delete environment"
       }
     ],
     "rules": [
       {
-        "id": "approve-job",
+        "id": "approve-proceed",
         "action": "approve_and_deploy",
         "roles": [
           "required_reviewer"
         ],
         "when": [
           {
-            "var": "job_status",
+            "var": "job_state",
             "op": "eq",
             "value": "pending"
+          },
+          {
+            "setting": "other_protection_rules_passed",
+            "op": "eq",
+            "value": true
           }
         ],
         "effect": {
-          "job_status": "proceeding"
+          "job_state": "proceeding",
+          "secrets_access": "accessible"
         },
-        "quote": "Once a job is approved (and any other deployment protection rules have passed), the job will proceed.",
+        "quote": "Once a job is approved (and any other deployment protection rules have passed), the job will proceed. At this point, the job can access any secrets stored in the environment.",
         "line": 21
+      },
+      {
+        "id": "approve-waiting-on-other-rules",
+        "action": "approve_and_deploy",
+        "roles": [
+          "required_reviewer"
+        ],
+        "when": [
+          {
+            "var": "job_state",
+            "op": "eq",
+            "value": "pending"
+          },
+          {
+            "setting": "other_protection_rules_passed",
+            "op": "eq",
+            "value": false
+          }
+        ],
+        "effect": {
+          "job_state": "approved"
+        },
+        "quote": "Deployment protection rules require specific conditions to pass before a job referencing the environment can proceed.",
+        "line": 52
       },
       {
         "id": "reject-job",
@@ -128,13 +155,13 @@
         ],
         "when": [
           {
-            "var": "job_status",
+            "var": "job_state",
             "op": "eq",
             "value": "pending"
           }
         ],
         "effect": {
-          "job_status": "failed"
+          "job_state": "failed"
         },
         "quote": "To reject the job, click **Reject**. If a job is rejected, the workflow will fail.",
         "line": 22
@@ -147,71 +174,50 @@
         ],
         "when": [
           {
-            "var": "job_status",
+            "var": "job_state",
             "op": "eq",
             "value": "pending"
           },
           {
-            "setting": "allow_admin_bypass",
+            "setting": "prevent_admin_bypass",
             "op": "eq",
-            "value": true
+            "value": false
           }
         ],
         "effect": {
-          "job_status": "proceeding"
+          "job_state": "proceeding"
         },
         "quote": "If you have configured deployment protection rules that control whether software can be deployed to an environment, you can bypass these rules and force all pending jobs referencing the environment to proceed.",
         "line": 29
       },
       {
-        "id": "delete-environment-waiting-job",
+        "id": "delete-env-waiting",
         "action": "delete_environment",
         "roles": [
           "administrator"
         ],
         "when": [
           {
-            "var": "job_status",
-            "op": "eq",
-            "value": "pending"
+            "var": "job_state",
+            "op": "in",
+            "value": [
+              "pending",
+              "approved"
+            ]
           }
         ],
         "effect": {
-          "job_status": "failed"
+          "job_state": "failed"
         },
         "quote": "Any jobs currently waiting because of protection rules from the deleted environment will automatically fail.",
         "line": 244
-      },
-      {
-        "id": "save-wait-timer",
-        "action": "save_protection_rules",
-        "roles": [
-          "administrator"
-        ],
-        "when": [
-          {
-            "input": "wait_timer",
-            "op": "gte",
-            "value": 1
-          },
-          {
-            "input": "wait_timer",
-            "op": "lte",
-            "value": 43200
-          }
-        ],
-        "effect": null,
-        "quote": "The time (in minutes) must be an integer between 1 and 43,200 (30 days).",
-        "line": 75
       }
     ],
     "prohibitions": [
       {
         "id": "no-self-approval",
         "action": "approve_and_deploy",
-        "roles": [
-          "required_reviewer"
-        ],
+        "roles": [],
         "when": [
           {
             "setting": "prevent_self_review",
@@ -233,9 +239,9 @@
         "roles": [],
         "when": [
           {
-            "setting": "allow_admin_bypass",
+            "setting": "prevent_admin_bypass",
             "op": "eq",
-            "value": false
+            "value": true
           }
         ],
         "quote": "You cannot bypass deployment protection rules if the environment has been configured to prevent admins from bypassing configured protection rules.",
@@ -247,26 +253,16 @@
         "roles": [],
         "when": [
           {
-            "var": "job_status",
+            "var": "job_state",
             "op": "ne",
             "value": "pending"
           }
         ],
         "quote": "You can only bypass deployment protection rules during workflow execution when a job referencing the environment is in a \"Pending\" state.",
         "line": 33
-      },
-      {
-        "id": "no-configure-non-admin",
-        "action": "save_protection_rules",
-        "roles": [
-          "required_reviewer"
-        ],
-        "when": [],
-        "quote": "Anyone that can edit workflows in the repository can create environments via a workflow file, but only repository admins can configure the environment.",
-        "line": 238
       }
     ]
   },
-  "recorded_at": "2026-10-16T12:39:07+09:00",
+  "recorded_at": "2026-10-16T12:43:49+09:00",
   "note": "Real gemini-4-argon extraction recorded by the app code path; replayed only with this timestamp shown."
 }
