@@ -39,9 +39,11 @@ function toast(msg) {
   setTimeout(() => t.remove(), 1800);
 }
 
+const replayReady = () => !S.loading && S.extraction?.status === 'passed' && Boolean(S.state);
+
 function go(step) {
   if (step === 'verify' && !S.extraction && !S.loading) return;
-  if (step === 'replay' && !S.state) return;
+  if (step === 'replay' && !replayReady()) return;
   S.step = step;
   render();
   window.scrollTo(0, 0);
@@ -106,6 +108,7 @@ async function runExtract(useRecorded) {
   if (!S.doc.text.trim()) return;
   S.loading = { started: Date.now(), useRecorded };
   S.extraction = null;
+  S.state = null; S.path = []; S.last = null; S.draft = null; // saved questions keep their own snapshots
   go('verify');
   const timer = setInterval(() => { if (S.step === 'verify' && S.loading) render(); }, 1000);
   const forHash = S.doc.hash;
@@ -175,6 +178,14 @@ function viewVerify() {
       <button class="btn primary" id="retry">Retry extraction</button>`;
   }
   const when = x.recorded ? `Recorded run from ${new Date(x.recorded_at).toLocaleString('en-US')}` : `Run at ${new Date(x.ran_at).toLocaleTimeString('en-US')}`;
+  if (x.status === 'unsupported') {
+    return `<span class="tag scope" style="margin-top:18px">Out of scope</span>
+      <h1 class="hero" style="margin-top:10px">This document doesn’t describe a workflow the replay supports.</h1>
+      <div class="loop">${(x.attempts || []).map(attemptRow).join('')}</div>
+      ${x.model?.reason ? `<p class="quote" style="margin-top:18px">${esc(x.model.reason)}</p>` : ''}
+      <p class="lede" style="margin-top:18px">Gemini 4 Argon marked it out of scope, or there are no actions and rules to replay. Nothing was executed and no questions were created. This is not a gap in the document. Try a spec that describes requests, reviews or approvals.</p>
+      <button class="btn" id="backdoc">Back to Document</button>`;
+  }
   if (x.status === 'unverified') {
     return `<h1 class="hero">Some rules never matched the source.</h1>
       <div class="loop">${x.attempts.map(attemptRow).join('')}</div>
@@ -217,6 +228,7 @@ function viewVerify() {
 
 function bindVerify() {
   document.getElementById('retry')?.addEventListener('click', () => runExtract(false));
+  document.getElementById('backdoc')?.addEventListener('click', () => go('document'));
   document.getElementById('reextract')?.addEventListener('click', () => { if (confirm('Discard this extraction and your review, then ask Gemini 4 Argon again?')) runExtract(false); });
   $view.querySelectorAll('[data-inc]').forEach((b) => b.addEventListener('click', () => { S.included.add(b.dataset.inc); S.state = null; render(); }));
   $view.querySelectorAll('[data-exc]').forEach((b) => b.addEventListener('click', () => { S.included.delete(b.dataset.exc); S.state = null; render(); }));
@@ -346,6 +358,7 @@ function viewResult() {
 }
 
 function viewReplay() {
+  if (!replayReady()) { S.step = 'verify'; return viewVerify(); }
   const m = S.extraction.model;
   const actor = S.people.find((p) => p.id === S.actorId);
   const changedKeys = S.last ? Object.keys(S.last.after).filter((k) => S.last.after[k] !== S.last.before[k]) : [];
@@ -377,6 +390,7 @@ function viewReplay() {
 }
 
 function bindReplay() {
+  if (S.step !== 'replay') return bindVerify();
   const m = S.extraction.model;
   const actor = S.people.find((p) => p.id === S.actorId);
   $view.querySelectorAll('[data-actor]').forEach((b) => b.addEventListener('click', () => { S.actorId = b.dataset.actor; render(); }));
@@ -458,7 +472,7 @@ function markdown() {
     const inp = Object.entries(q.inputs || {}).map(([k, v]) => `${label(m?.inputs, k)} = ${v}`).join(', ');
     if (inp) lines.push(`Inputs: ${inp}`);
     lines.push('', 'Related source text:');
-    q.evidence.forEach((e) => lines.push(`> ${e.quote} (document line ${e.line})`));
+    q.evidence.forEach((e) => lines.push(`> ${e.quote} (rule ${e.id}, document line ${e.line})`));
     lines.push('');
   });
   if (!S.questions.length) lines.push('No open questions on the paths tried. This does not mean the document is complete.');
@@ -478,7 +492,7 @@ function viewQuestions() {
       <div class="q">
         <div class="qt">${esc(q.text)}</div>
         <div class="qm">${esc(q.path.map((p) => `${p.actor.split(' · ')[0]} ${p.action}`).join(' → '))} · stopped at ${esc(m ? m.variables.map((v) => pretty(q.state[v.id])).join(' · ') : '')}</div>
-        ${q.evidence.slice(0, 2).map((e) => `<p class="quote" style="font-size:15px">${esc(e.quote)}</p><div class="cite">line ${esc(e.line)}</div>`).join('')}
+        ${q.evidence.slice(0, 2).map((e) => `<p class="quote" style="font-size:15px">${esc(e.quote)}</p><div class="cite">rule ${esc(e.id)} · document line ${esc(e.line)}</div>`).join('')}
         <div class="src" style="margin-top:8px">${esc(q.source)} · <button class="pill small" data-del="${i}">Remove</button></div>
       </div>`).join('')}</div>`;
 }
@@ -500,7 +514,7 @@ function renderChrome() {
   document.querySelectorAll('#steps button').forEach((b) => {
     const s = b.dataset.step;
     b.classList.toggle('on', s === S.step);
-    b.disabled = (s === 'verify' && !S.extraction && !S.loading) || (s === 'replay' && !S.state) || (s === 'questions' && !S.state && !S.questions.length);
+    b.disabled = (s === 'verify' && !S.extraction && !S.loading) || (s === 'replay' && !replayReady()) || (s === 'questions' && !replayReady() && !S.questions.length);
   });
   document.getElementById('qcount').textContent = S.questions.length ? `· ${S.questions.length}` : '';
   const chip = document.getElementById('srcchip');

@@ -22,6 +22,9 @@ Schema:
 Condition: {"var"|"setting"|"input"|"relation": "<id>", "op": "eq"|"ne"|"in"|"not_in"|"lt"|"lte"|"gt"|"gte", "value": ...}
 Settings and relations compare to true/false.
 
+Out of scope: if the document does not describe a workflow a person could replay (states changed by people's actions under documented rules), for example it asks to connect to or execute real external services, return
+{"unsupported": true, "reason": "<one sentence>", "reason_quote": "<exact quote>", "variables": [], "settings": [], "roles": [], "relations": [], "inputs": [], "actions": [], "rules": [], "prohibitions": []}
+
 Hard rules:
 - Every "quote" must be copied character-for-character from the document. Do not paraphrase. Quote one sentence or clause.
 - Model only what the document states. Never add a rule, outcome or prohibition from your own knowledge.

@@ -1,0 +1,257 @@
+{
+  "status": "passed",
+  "source_hash": "f1e8192db4167146aff49731515caed384ce1480ee197ff45b81836d52139561",
+  "attempts": [
+    {
+      "n": 1,
+      "source_hash": "f1e8192db4167146aff49731515caed384ce1480ee197ff45b81836d52139561",
+      "interaction_id": "v1_ChdPNnpSYXFLUE80SE5yZmNQbWJIVGlRbxIXTzZ6UmFxS1BPNEhOcmZjUG1iSFRpUW8",
+      "model": "gemini-4-argon",
+      "ms": 11300,
+      "checks": 110,
+      "failed": 0,
+      "errors": []
+    }
+  ],
+  "model": {
+    "variables": [
+      {
+        "id": "status",
+        "label": "Request status",
+        "values": [
+          "draft",
+          "pending",
+          "approved",
+          "rejected"
+        ],
+        "initial": "draft"
+      }
+    ],
+    "settings": [],
+    "roles": [
+      {
+        "id": "requester",
+        "label": "Requester",
+        "quote": "Only the requester may submit it; submit changes draft to pending.",
+        "line": 4
+      },
+      {
+        "id": "reviewer",
+        "label": "Reviewer",
+        "quote": "Only the reviewer may approve or reject a pending request.",
+        "line": 5
+      }
+    ],
+    "relations": [],
+    "inputs": [
+      {
+        "id": "units",
+        "label": "Units",
+        "type": "integer",
+        "quote": "Scope: one request, requester and reviewer roles, integer units, no external services.",
+        "line": 3
+      }
+    ],
+    "actions": [
+      {
+        "id": "submit",
+        "label": "Submit"
+      },
+      {
+        "id": "approve",
+        "label": "Approve"
+      },
+      {
+        "id": "reject",
+        "label": "Reject"
+      }
+    ],
+    "rules": [
+      {
+        "id": "r1_submit",
+        "action": "submit",
+        "roles": [
+          "requester"
+        ],
+        "when": [
+          {
+            "var": "status",
+            "op": "eq",
+            "value": "draft"
+          }
+        ],
+        "effect": {
+          "status": "pending"
+        },
+        "quote": "Only the requester may submit it; submit changes draft to pending.",
+        "line": 4
+      },
+      {
+        "id": "r3_approve",
+        "action": "approve",
+        "roles": [
+          "reviewer"
+        ],
+        "when": [
+          {
+            "var": "status",
+            "op": "eq",
+            "value": "pending"
+          },
+          {
+            "input": "units",
+            "op": "lte",
+            "value": 100
+          }
+        ],
+        "effect": {
+          "status": "approved"
+        },
+        "quote": "Approve is permitted only when units <= 100; a permitted approve changes pending to approved.",
+        "line": 6
+      },
+      {
+        "id": "r4_reject",
+        "action": "reject",
+        "roles": [
+          "reviewer"
+        ],
+        "when": [
+          {
+            "var": "status",
+            "op": "eq",
+            "value": "pending"
+          }
+        ],
+        "effect": {
+          "status": "rejected"
+        },
+        "quote": "Reject changes pending to rejected.",
+        "line": 7
+      },
+      {
+        "id": "r6_approve_contradiction",
+        "action": "approve",
+        "roles": [
+          "reviewer"
+        ],
+        "when": [
+          {
+            "var": "status",
+            "op": "eq",
+            "value": "pending"
+          },
+          {
+            "input": "units",
+            "op": "lte",
+            "value": 100
+          }
+        ],
+        "effect": {
+          "status": "rejected"
+        },
+        "quote": "For a pending request with units <= 100, a permitted approve changes pending to rejected.",
+        "line": 9
+      }
+    ],
+    "prohibitions": [
+      {
+        "id": "p1_submit_reviewer",
+        "action": "submit",
+        "roles": [
+          "reviewer"
+        ],
+        "when": [],
+        "quote": "Only the requester may submit it; submit changes draft to pending.",
+        "line": 4
+      },
+      {
+        "id": "p2_approve_requester",
+        "action": "approve",
+        "roles": [
+          "requester"
+        ],
+        "when": [],
+        "quote": "Only the reviewer may approve or reject a pending request. Other actors must not perform these actions.",
+        "line": 5
+      },
+      {
+        "id": "p2_reject_requester",
+        "action": "reject",
+        "roles": [
+          "requester"
+        ],
+        "when": [],
+        "quote": "Only the reviewer may approve or reject a pending request. Other actors must not perform these actions.",
+        "line": 5
+      },
+      {
+        "id": "p3_approve_over_100",
+        "action": "approve",
+        "roles": [],
+        "when": [
+          {
+            "input": "units",
+            "op": "gt",
+            "value": 100
+          }
+        ],
+        "quote": "If units > 100, approve is forbidden and status remains pending.",
+        "line": 6
+      },
+      {
+        "id": "p5_submit_terminal",
+        "action": "submit",
+        "roles": [],
+        "when": [
+          {
+            "var": "status",
+            "op": "in",
+            "value": [
+              "approved",
+              "rejected"
+            ]
+          }
+        ],
+        "quote": "Approved and rejected are terminal; further submit, approve or reject actions are not permitted.",
+        "line": 8
+      },
+      {
+        "id": "p5_approve_terminal",
+        "action": "approve",
+        "roles": [],
+        "when": [
+          {
+            "var": "status",
+            "op": "in",
+            "value": [
+              "approved",
+              "rejected"
+            ]
+          }
+        ],
+        "quote": "Approved and rejected are terminal; further submit, approve or reject actions are not permitted.",
+        "line": 8
+      },
+      {
+        "id": "p5_reject_terminal",
+        "action": "reject",
+        "roles": [],
+        "when": [
+          {
+            "var": "status",
+            "op": "in",
+            "value": [
+              "approved",
+              "rejected"
+            ]
+          }
+        ],
+        "quote": "Approved and rejected are terminal; further submit, approve or reject actions are not permitted.",
+        "line": 8
+      }
+    ]
+  },
+  "recorded_at": "2026-10-16T13:46:53+09:00",
+  "note": "Real gemini-4-argon extraction recorded by the app code path; replayed only with this timestamp shown."
+}

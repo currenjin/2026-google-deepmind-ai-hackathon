@@ -26,6 +26,11 @@ if (existsSync(runDir)) {
   }
 }
 
+// Structural checks can pass on an empty model. Without actions and rules there is nothing to replay.
+function isReplayable(model) {
+  return Boolean(model && !model.unsupported && model.actions?.length && (model.rules?.length || model.prohibitions?.length));
+}
+
 const TYPES = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.svg': 'image/svg+xml', '.png': 'image/png' };
 
 function send(res, code, body, type = 'application/json; charset=utf-8') {
@@ -76,6 +81,7 @@ const server = http.createServer(async (req, res) => {
       if (useRecorded && RECORDED.has(hash)) return send(res, 200, { ...RECORDED.get(hash), recorded: true });
       if (!provider) return send(res, 503, { status: 'infra_error', message: 'No model provider configured on the server.' });
       const result = await extractWithRepair(provider, text);
+      if (result.status === 'passed' && !isReplayable(result.model)) result.status = 'unsupported';
       return send(res, 200, { ...result, recorded: false, ran_at: new Date().toISOString() });
     }
 
