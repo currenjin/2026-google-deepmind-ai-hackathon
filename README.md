@@ -6,6 +6,8 @@ Developers get a PRD or policy document and start building. The normal path is c
 
 **Live app:** https://spec-gap-replay-1088859591404.asia-northeast3.run.app
 
+**Demo video:** https://youtu.be/auwObIfZll0
+
 ## Try it in 60 seconds
 
 The recorded runs are real `gemini-4-argon` extractions saved with their timestamp. Use **Extract with Gemini 4 Argon** instead for a fresh run (10–35 s).
