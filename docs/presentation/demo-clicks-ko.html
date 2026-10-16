@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>데모 클릭 순서</title>
+<style>
+  :root { --bg: #ffffff; --text: #111418; --muted: #5b6472; --line: #e3e6ea; --btn: #0b57d0; --say: #0f7b3f; --warn: #b4580a; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg: #0d1117; --text: #e8ecf1; --muted: #9aa4b2; --line: #2a313b; --btn: #7aa7ff; --say: #5fd38d; --warn: #f0b44c; } }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 17px/1.5 -apple-system, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif; }
+  main { max-width: 1100px; margin: 0 auto; padding: 24px 16px 60px; }
+  h1 { font-size: 26px; margin: 0 0 6px; }
+  h2 { font-size: 20px; margin: 30px 0 8px; padding-top: 10px; border-top: 2px solid var(--line); }
+  p.note { color: var(--muted); margin: 4px 0 14px; }
+  table { width: 100%; border-collapse: collapse; }
+  th, td { text-align: left; vertical-align: top; padding: 10px 8px; border-bottom: 1px solid var(--line); }
+  th { font-size: 14px; color: var(--muted); font-weight: 600; }
+  td.n { width: 34px; color: var(--muted); font-variant-numeric: tabular-nums; }
+  td.where { width: 22%; color: var(--muted); font-size: 15px; }
+  .b { display: inline-block; border: 1.5px solid var(--btn); color: var(--btn); border-radius: 999px; padding: 1px 10px; font-weight: 600; font-size: 15px; white-space: nowrap; }
+  .say { color: var(--say); }
+  .see { color: var(--muted); font-size: 15px; display: block; margin-top: 3px; }
+  .warn { color: var(--warn); font-weight: 600; }
+  @media (max-width: 700px) { td.where { display: none; } th.where { display: none; } }
+</style>
+</head>
+<body>
+<main>
+<h1>데모 클릭 순서 · 할 말</h1>
+<p class="note">파란 테두리 = 누를 버튼(화면에 보이는 글자 그대로) · 초록 = 그때 할 말 · 회색 = 눌렀을 때 화면에 나오는 것. 시작 전에 앱 탭을 새로고침한다.</p>
+
+<h2>장면 1 · GitHub 공식 문서 열기 (약 30초)</h2>
+<table>
+<tr><th>#</th><th class="where">어디</th><th>누를 것</th><th>할 말</th></tr>
+<tr><td class="n">1</td><td class="where">맨 위 왼쪽 샘플 버튼 줄</td><td><span class="b">GitHub Docs · deployment review</span> 이미 흰색이면 안 눌러도 됨</td><td class="say">실제 GitHub 공식 문서 세 페이지입니다.</td></tr>
+<tr><td class="n">2</td><td class="where">본문 아래 오른쪽</td><td><span class="b">Use recorded run · 12:43 PM</span><span class="see">→ Verify 화면, "113 of 113 checks passed"</span></td><td class="say">Argon이 실제로 추출한 녹화본이고, 구조 검사 113개 통과했습니다.</td></tr>
+<tr><td class="n">3</td><td class="where">오른쪽 규칙 목록, 밑줄 글자</td><td><span class="b">line 21</span> (아무 줄 번호나)<span class="see">→ 왼쪽 원문의 그 줄로 이동</span></td><td class="say">규칙마다 원문 몇 번째 줄인지 붙어 있어요.</td></tr>
+<tr><td class="n">4</td><td class="where">오른쪽 아래 흰 버튼</td><td><span class="b">Start replay</span></td><td class="say">이제 직접 눌러 보겠습니다.</td></tr>
+</table>
+
+<h2>장면 2 · 막히는 경우 Blocked (약 30초)</h2>
+<table>
+<tr><th>#</th><th class="where">어디</th><th>누를 것</th><th>할 말</th></tr>
+<tr><td class="n">5</td><td class="where">맨 위 "Acting as" 줄</td><td><span class="b">A · Required reviewer · initiated the workflow run</span> 흰색인지 확인만</td><td class="say">A는 검토자인데, 이 배포를 시작한 사람이기도 해요.</td></tr>
+<tr><td class="n">6</td><td class="where">"Conditions · you choose" 줄</td><td><span class="b">Prevent self-reviews for deployments · off</span><span class="see">→ "· on"으로 바뀜</span></td><td class="say">자기 승인 금지 설정을 켜고,</td></tr>
+<tr><td class="n">7</td><td class="where">가운데 첫 번째 흰 버튼</td><td><span class="b">Approve and deploy</span><span class="see">→ 주황 "Blocked by document", 62행 인용</span></td><td class="say">막혔습니다. 근거는 62행이고 상태는 안 바뀌었어요. 문서가 막은 거라 빈틈이 아닙니다.</td></tr>
+</table>
+
+<h2>장면 3 · 같은 클릭, 설정만 바꾸기 Defined (약 25초) <span class="warn">시간 없으면 건너뜀</span></h2>
+<table>
+<tr><th>#</th><th class="where">어디</th><th>누를 것</th><th>할 말</th></tr>
+<tr><td class="n">8</td><td class="where">버튼 줄 맨 끝, 점선 버튼</td><td><span class="b">Reset path</span><span class="see">→ 처음 상태(Pending)로</span></td><td class="say">처음 상태로 돌리고,</td></tr>
+<tr><td class="n">9</td><td class="where">"Conditions · you choose" 줄</td><td><span class="b">Prevent self-reviews for deployments · on</span><span class="see">→ "· off"로 바뀜</span></td><td class="say">이번엔 설정을 끄고</td></tr>
+<tr><td class="n">10</td><td class="where">가운데 첫 번째 흰 버튼</td><td><span class="b">Approve and deploy</span><span class="see">→ 초록 "Defined", Job state: Approved</span></td><td class="say">같은 사람, 같은 클릭인데 Defined가 나옵니다.</td></tr>
+</table>
+
+<h2>장면 4 · 문서가 결정 못 하는 경우 Needs decision (약 40초)</h2>
+<table>
+<tr><th>#</th><th class="where">어디</th><th>누를 것</th><th>할 말</th></tr>
+<tr><td class="n">11</td><td class="where">맨 위 가운데 탭</td><td><span class="b">Document</span></td><td class="say">이번엔 문서가 스스로 모순인 경우예요.</td></tr>
+<tr><td class="n">12</td><td class="where">샘플 버튼 줄 두 번째</td><td><span class="b">Test spec · conflicting approval rules</span><span class="see">→ "Changing the document…" 팝업 → <b>확인</b></span></td><td class="say">이건 저희가 직접 만든 테스트 문서고, 앱에도 그렇게 표시돼 있어요.</td></tr>
+<tr><td class="n">13</td><td class="where">본문 아래 오른쪽</td><td><span class="b">Use recorded run · 1:46 PM</span></td><td class="say">(말 없이 넘어가도 됨)</td></tr>
+<tr><td class="n">14</td><td class="where">오른쪽 아래 흰 버튼</td><td><span class="b">Start replay</span></td><td class="say"></td></tr>
+<tr><td class="n">15</td><td class="where">"Inputs" 줄의 Units 칸</td><td>칸을 누르고 <b>80</b> 입력</td><td class="say">수량은 80으로 하고,</td></tr>
+<tr><td class="n">16</td><td class="where">"Acting as" 줄 첫 번째</td><td><span class="b">A · Requester</span> 흰색인지 확인</td><td class="say"></td></tr>
+<tr><td class="n">17</td><td class="where">가운데 첫 번째 흰 버튼</td><td><span class="b">Submit</span><span class="see">→ Defined, Status: Pending</span></td><td class="say">요청자가 제출하고,</td></tr>
+<tr><td class="n">18</td><td class="where">"Acting as" 줄 두 번째</td><td><span class="b">B · Reviewer</span></td><td class="say">검토자가</td></tr>
+<tr><td class="n">19</td><td class="where">가운데 두 번째 버튼</td><td><span class="b">Approve</span><span class="see">→ 보라 "Needs decision", 6행·9행 인용</span></td><td class="say">승인을 누르면 Needs decision이에요. 6행은 승인, 9행은 반려라고 해서 여기서 멈춥니다.</td></tr>
+</table>
+
+<h2>장면 5 · 질문 만들기 (약 25초)</h2>
+<table>
+<tr><th>#</th><th class="where">어디</th><th>누를 것</th><th>할 말</th></tr>
+<tr><td class="n">20</td><td class="where">인용 아래 흰 버튼</td><td><span class="b">Draft a question</span><span class="see">→ 몇 초 뒤 질문 초안 칸이 나옴</span></td><td class="say">이 지점을 PM에게 물어볼 질문은 Flash가 초안을 씁니다.</td></tr>
+<tr><td class="n">21</td><td class="where">초안 칸 아래 흰 버튼</td><td><span class="b">Add to questions</span></td><td class="say">사람이 확인하고 추가하면</td></tr>
+<tr><td class="n">22</td><td class="where">맨 위 탭 맨 오른쪽</td><td><span class="b">Questions · 1</span></td><td class="say">경로, 시작 상태, 규칙 ID, 원문 두 줄이 같이 들어가고</td></tr>
+<tr><td class="n">23</td><td class="where">오른쪽 위 흰 버튼</td><td><span class="b">Download .md</span></td><td class="say">마크다운으로 바로 보낼 수 있어요.</td></tr>
+</table>
+<p class="note">끝나면 덱 창으로 돌아가 7번 슬라이드(챗봇에 물어보면 안 되나요?)부터 이어 간다.</p>
+
+<h2>꼬였을 때</h2>
+<table>
+<tr><th>상황</th><th>누를 것</th><th>할 말</th></tr>
+<tr><td>버튼을 잘못 눌렀다</td><td><span class="b">Reset path</span> (규칙 검토와 질문은 그대로)</td><td class="say">처음 상태로 돌리고 다시 해 볼게요.</td></tr>
+<tr><td>Replay 탭이 안 눌린다</td><td>맨 위 <span class="b">Verify</span> 탭 → <span class="b">Start replay</span></td><td></td></tr>
+<tr><td>앱이 안 열린다 / 너무 느리다</td><td>Downloads의 <b>spec-gap-replay-demo-v5.mp4</b> 재생</td><td class="say">녹화한 영상으로 보여 드릴게요.</td></tr>
+</table>
+</main>
+</body>
+</html>
