@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>발표 대본 한국어</title>
+<style>
+  :root { --bg: #ffffff; --text: #111418; --muted: #5b6472; --line: #e3e6ea; --say: #0f3d8a; --tag: #0f7b3f; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg: #0d1117; --text: #e8ecf1; --muted: #9aa4b2; --line: #2a313b; --say: #cfe0ff; --tag: #5fd38d; } }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 18px/1.65 -apple-system, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif; }
+  main { max-width: 980px; margin: 0 auto; padding: 24px 16px 60px; }
+  h1 { font-size: 26px; margin: 0 0 4px; }
+  p.note { color: var(--muted); margin: 0 0 18px; font-size: 15px; }
+  section { border-top: 2px solid var(--line); padding: 14px 0 6px; }
+  .head { display: flex; gap: 12px; align-items: baseline; flex-wrap: wrap; }
+  .no { font-weight: 700; font-size: 20px; }
+  .title { font-weight: 600; font-size: 20px; }
+  .time { color: var(--muted); font-size: 15px; }
+  .screen { color: var(--muted); font-size: 15px; margin: 4px 0 8px; }
+  .say p { margin: 0 0 8px; color: var(--say); }
+  .tag { color: var(--tag); font-weight: 600; }
+</style>
+</head>
+<body>
+<main>
+<h1>발표 대본 · 한국어 · 덱 10장 · 약 4분</h1>
+<p class="note">회색 = 그 슬라이드에 보이는 것, 파란 글 = 할 말. 그대로 읽어도 되고, 편한 말로 바꿔도 된다. 숫자와 줄 번호만 정확히 말하면 된다.</p>
+
+<section><div class="head"><span class="no">1</span><span class="title">표지</span><span class="time">15초</span></div>
+<div class="screen">Spec Gap Replay · 결과 4종 배지</div>
+<div class="say"><p>안녕하세요, 정현진입니다. 제가 만든 건 Spec Gap Replay예요.</p><p>기획 문서를 직접 눌러 보면서 따라가고, 문서에 답이 없는 지점이 나오면 거기서 멈추는 도구입니다.</p></div></section>
+
+<section><div class="head"><span class="no">2</span><span class="title">문제</span><span class="time">30초</span></div>
+<div class="screen">질문 세 줄</div>
+<div class="say"><p>개발하다 보면 PRD를 받죠. 정상 흐름은 금방 이해가 되는데, 막히는 건 예외 상황이에요.</p><p>배포를 시작한 사람이 자기가 승인해도 되는지, 이 상태에서 이 버튼을 누르면 뭐가 바뀌는지, 두 군데가 서로 다르게 쓰여 있으면 어느 쪽을 따라야 하는지.</p><p>이걸 확인할 방법이 없으니까 결국 감으로 만들거나, "이거 어떻게 해요?" 하고 애매하게 물어보게 됩니다.</p></div></section>
+
+<section><div class="head"><span class="no">3</span><span class="title">동작 방식</span><span class="time">35초</span></div>
+<div class="screen">문서 → Argon → 코드 검사 / 사람 → 엔진 → Flash</div>
+<div class="say"><p>원리는 한 줄이에요. <span class="tag">모델은 읽기만 하고, 판정은 코드가 합니다.</span></p><p>Gemini 4 Argon이 문서에서 규칙을 뽑으면서 원문 문장을 같이 붙여 와요. 그 문장이 원문에 진짜 있는지는 코드가 확인하고, 틀리면 Argon한테 다시 보내서 고치게 합니다. 최대 세 번까지요.</p><p>그다음 사람이 규칙을 한 번 보고, 엔진이 그 규칙대로만 결과를 냅니다.</p></div></section>
+
+<section><div class="head"><span class="no">4</span><span class="title">시작 화면</span><span class="time">15초</span></div>
+<div class="screen">Document 화면 · GitHub Docs 샘플 선택</div>
+<div class="say"><p>첫 화면은 이렇게 생겼어요. 문서를 붙여 넣거나 샘플을 고르면 됩니다.</p><p>오늘 보여 드릴 건 GitHub 공식 문서 세 페이지, 2만 자 정도 되는 실제 문서예요.</p></div></section>
+
+<section><div class="head"><span class="no">5</span><span class="title">추출과 검증</span><span class="time">25초</span></div>
+<div class="screen">Verify 화면 · 113 of 113 checks passed</div>
+<div class="say"><p>Argon이 실제로 추출한 결과예요. 위에 보시면 <span class="tag">구조 검사 113개</span>를 다 통과했고요.</p><p>오른쪽 규칙마다 원문 몇 번째 줄인지가 붙어 있어서, 사람이 보고 넣을지 뺄지 정할 수 있습니다.</p></div></section>
+
+<section><div class="head"><span class="no">6</span><span class="title">직접 눌러 보기</span><span class="time">30초</span></div>
+<div class="screen">Replay 화면 · Blocked by document · 62행 인용</div>
+<div class="say"><p>이제 버튼을 직접 눌러 봐요. A는 검토자인데, 이 배포를 시작한 사람이기도 합니다.</p><p>자기 승인 금지 설정을 켜고 승인을 누르면, 막혀요. 근거는 <span class="tag">62행</span>이고 상태는 그대로예요. 문서가 막은 거라서 빈틈이 아닙니다.</p><p>같은 설정을 끄고 똑같이 누르면, 이번엔 통과돼요.</p></div></section>
+
+<section><div class="head"><span class="no">7</span><span class="title">결정 못 하는 곳</span><span class="time">30초</span></div>
+<div class="screen">Needs decision · 6행·9행 인용</div>
+<div class="say"><p>이건 제가 일부러 만든 테스트 문서예요. 앱에도 테스트 문서라고 표시돼 있고요.</p><p>승인을 누르면 <span class="tag">6행</span>은 승인된다고 하고 <span class="tag">9행</span>은 반려된다고 해요. 그래서 추측하지 않고 여기서 멈춥니다. 이게 Needs decision이에요.</p></div></section>
+
+<section><div class="head"><span class="no">8</span><span class="title">질문으로 넘기기</span><span class="time">20초</span></div>
+<div class="screen">Questions 화면 · Download .md</div>
+<div class="say"><p>멈춘 지점은 바로 질문으로 만들 수 있어요. 초안은 Gemini 3.8 Flash가 쓰고, 사람이 확인해서 추가합니다.</p><p>질문에는 어떻게 여기까지 왔는지, 시작 상태, 규칙, 원문 두 줄이 같이 들어가서 마크다운으로 바로 보낼 수 있어요.</p></div></section>
+
+<section><div class="head"><span class="no">9</span><span class="title">챗봇에 물어보면 안 되나요?</span><span class="time">25초</span></div>
+<div class="screen">모르면 멈춥니다 · 결과마다 원문 줄 · 막힌 곳과 빈 곳</div>
+<div class="say"><p>그냥 챗봇한테 물어보면 되지 않냐고 하실 수 있는데요.</p><p>챗봇은 빈틈이 있으면 그럴듯하게 채워서 답해요. 이건 <span class="tag">모르면 멈춥니다.</span> 결과마다 원문 줄이 붙고, 문서가 막은 거랑 문서에 아예 없는 걸 따로 보여 줘요.</p></div></section>
+
+<section><div class="head"><span class="no">10</span><span class="title">한계 · 마무리</span><span class="time">20초</span></div>
+<div class="screen">한계 세 줄 · GitHub 주소</div>
+<div class="say"><p>솔직하게 한계도 말씀드릴게요. 실제 GitHub 문서에서는 빈틈을 못 찾아서, 빈틈 장면은 테스트 문서로 보여 드렸어요.</p><p>그리고 추출이 돌릴 때마다 조금씩 달라서, 사람이 규칙을 꼭 한 번 보게 만들었습니다.</p><p>코드는 다 공개돼 있고 지금 Cloud Run에서 돌아가고 있어요. 감사합니다.</p></div></section>
+
+<section><div class="head"><span class="title">질문 받으면</span></div>
+<div class="say"><p><b>왜 Argon이에요?</b> → 2만 자를 한 번에 받아서 규칙이랑 원문 인용으로 만들고, 검사에 걸리면 이어서 스스로 고쳐요.</p><p><b>추출이 틀리면요?</b> → 없는 문장이나 참조는 코드가 잡고, 뜻이 틀린 건 사람이 보고 다시 뽑으면 돼요.</p><p><b>큰 PRD도 돼요?</b> → 아직 검증은 안 했어요. 지금은 요청·검토·승인 같은 흐름에 맞춰져 있습니다.</p><p><b>실제 문서에서 빈틈 찾았어요?</b> → 미리 정한 경로에서는 못 찾았고, 슬라이드에도 그렇게 적었어요.</p></div></section>
+</main>
+</body>
+</html>
