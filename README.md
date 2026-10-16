@@ -2,7 +2,7 @@
 
 Walk a spec's documented paths. Stop where the document can't decide.
 
-Developers get a PRD or policy document and start building. The normal path is clear. The edge cases are not, and they surface weeks later as bugs or Slack threads. Spec Gap Replay turns the document into a workflow you can click through, and it never fills a gap with a guess.
+Developers get a PRD or policy document and start building. The normal path is clear. The edge cases are not: the answers can be scattered, missing or in conflict. Spec Gap Replay turns the document into a workflow you can click through, and it never fills a gap with a guess.
 
 **Live app:** https://spec-gap-replay-1088859591404.asia-northeast3.run.app
 
@@ -22,7 +22,7 @@ The GitHub Docs sample is real public documentation. On the paths we fixed in ad
 ## How it works
 
 1. **Document.** Paste a non-sensitive spec, PRD or policy document.
-2. **Verify.** Gemini 4 Argon extracts states, settings, roles, actions, rules and prohibitions, each with a quote. Code checks every quote against the source and every reference in the model. Failed checks go back to Argon for repair, at most 3 calls in total. Infrastructure errors are never retried automatically. A person then includes or excludes each rule.
+2. **Verify.** Gemini 4 Argon extracts states, settings, roles, actions, rules and prohibitions, each with a quote. Code checks every quote against the source and every reference in the model. Failed checks go back to Argon for repair, at most 3 calls in total. When the provider returns an error, the app stops its repair loop instead of repeating the extraction. (The Google GenAI SDK may still retry an individual HTTP request internally.) A person then includes or excludes each rule.
 3. **Replay.** Pick who is acting, flip the document's settings, and press the document's own buttons. Code decides every outcome:
    - **Defined:** a reviewed rule decides the result and the state changes.
    - **Blocked by document:** a quoted prohibition, an unmet condition, or another role's action. Not a gap.
@@ -39,7 +39,7 @@ document ──► gemini-4-argon (Interactions API, thinking_level: medium)
                 │  JSON: variables, settings, roles, relations, inputs, actions, rules, prohibitions, each with a quote
                 ▼
           src/validate.js  ── fails? ──► errors sent back with previous_interaction_id (max 3 calls total)
-                │ passes                  infra/quota/auth errors: stop, user retries explicitly
+                │ passes                  provider errors: repair loop stops, user retries explicitly
                 ▼
           person reviews each rule (Include / Exclude / Re-extract)
                 ▼

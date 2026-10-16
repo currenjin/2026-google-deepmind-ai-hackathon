@@ -174,7 +174,7 @@ function viewVerify() {
   if (x.status === 'infra_error') {
     return `<h1 class="hero">The model call failed.</h1>
       <div class="loop">${(x.attempts || []).map(attemptRow).join('')}</div>
-      <div class="alert">${esc(x.message || 'The extraction stopped on an infrastructure or model error. Nothing was retried automatically.')}</div>
+      <div class="alert">${esc(x.message || 'The extraction stopped on a provider error. The app did not repeat the extraction.')}</div>
       <button class="btn primary" id="retry">Retry extraction</button>`;
   }
   const when = x.recorded ? `Recorded run from ${new Date(x.recorded_at).toLocaleString('en-US')}` : `Run at ${new Date(x.ran_at).toLocaleTimeString('en-US')}`;

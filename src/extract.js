@@ -97,7 +97,8 @@ export function geminiProvider(apiKey) {
   };
 }
 
-// Extraction with a bounded structural repair loop. Infra errors stop immediately (no auto retry).
+// Extraction with a bounded structural repair loop. A provider error stops the loop; the app does not
+// repeat the extraction. The SDK may still retry a single HTTP request internally.
 export async function extractWithRepair(provider, source) {
   const sourceHash = sha256(source);
   const attempts = [];
