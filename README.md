@@ -8,6 +8,8 @@ Developers get a PRD or policy document and start building. The normal path is c
 
 **Demo video:** https://youtu.be/auwObIfZll0
 
+**Presentation:** deck [EN](docs/presentation/spec-gap-replay-deck-en.pdf) · [KO](docs/presentation/spec-gap-replay-deck-ko.pdf), pitch script [EN](docs/presentation/pitch-script-en.md) · [KO](docs/presentation/pitch-script-ko.md)
+
 ## Try it in 60 seconds
 
 The recorded runs are real `gemini-4-argon` extractions saved with their timestamp. Use **Extract with Gemini 4 Argon** instead for a fresh run (10–35 s).
