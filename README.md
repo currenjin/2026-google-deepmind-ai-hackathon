@@ -15,7 +15,7 @@ The recorded runs are real `gemini-4-argon` extractions saved with their timesta
 | Goal | Clicks | What you should see |
 | --- | --- | --- |
 | A documented prohibition | GitHub Docs sample (preselected) → **Use recorded run** → **Start replay** → turn on *Prevent self-reviews for deployments* → as **A** press **Approve and deploy** | **Blocked by document**, quoting document line 62 |
-| Same click, different setting | **Reset path** → turn the setting off → press **Approve and deploy** again | **Defined**: job approved. Turn on *Other deployment protection rules have passed* to see it proceed and unlock secrets |
+| Same click, different setting | **Reset path** → turn the setting off → press **Approve and deploy** again | **Defined**: job approved. For the next scene, **Reset path** to Pending, turn on *Other deployment protection rules have passed*, then press **Approve and deploy**: the job may proceed and environment secrets become accessible |
 | A spec that can't decide | Pick **Test spec · conflicting approval rules** → **Use recorded run** → **Start replay** → enter Units `80` → as the Requester press **Submit** → as the Reviewer press **Approve** | **Needs decision**: two rules disagree, lines 6 and 9 |
 | Turn it into a question | **Draft a question** → edit → **Add to questions** → **Questions** → **Download .md** | Markdown with the path, start state, rule ids and quotes |
 
@@ -24,7 +24,7 @@ The GitHub Docs sample is real public documentation. On the paths we fixed in ad
 ## How it works
 
 1. **Document.** Paste a non-sensitive spec, PRD or policy document.
-2. **Verify.** Gemini 4 Argon extracts states, settings, roles, actions, rules and prohibitions, each with a quote. Code checks every quote against the source and every reference in the model. Failed checks go back to Argon for repair, at most 3 calls in total. When the provider returns an error, the app stops its repair loop instead of repeating the extraction. (The Google GenAI SDK may still retry an individual HTTP request internally.) A person then includes or excludes each rule.
+2. **Verify.** Gemini 4 Argon extracts states, settings, roles, actions, rules and prohibitions. Settings, roles, rules and prohibitions carry source quotes. Code checks every quote against the source and every reference in the model. Failed checks go back to Argon for repair, at most 3 calls in total. When the provider returns an error, the app stops its repair loop instead of repeating the extraction. (The Google GenAI SDK may still retry an individual HTTP request internally.) A person then includes or excludes each rule.
 3. **Replay.** Pick who is acting, flip the document's settings, and press the document's own buttons. Code decides every outcome:
    - **Defined:** a reviewed rule decides the result and the state changes.
    - **Blocked by document:** a quoted prohibition, an unmet condition, or another role's action. Not a gap.
@@ -38,7 +38,7 @@ The model never decides outcomes. Passing the quote checks proves the text exist
 
 ```
 document ──► gemini-4-argon (Interactions API, thinking_level: medium)
-                │  JSON: variables, settings, roles, relations, inputs, actions, rules, prohibitions, each with a quote
+                │  JSON: variables, settings, roles, relations, inputs, actions, rules, prohibitions (quoted: settings, roles, rules, prohibitions)
                 ▼
           src/validate.js  ── fails? ──► errors sent back with previous_interaction_id (max 3 calls total)
                 │ passes                  provider errors: repair loop stops, user retries explicitly
@@ -57,7 +57,7 @@ document ──► gemini-4-argon (Interactions API, thinking_level: medium)
 
 ## Why Gemini 4 Argon
 
-Argon reads the whole document and produces a closed, executable model in one pass: every state, setting, role and rule, each tied to an exact quote. When code finds a broken quote or reference, Argon repairs its own output in the same interaction (`previous_interaction_id`). That keeps the original reasoning context instead of starting over. We pair it with `gemini-3.8-flash` for the low-latency question drafts, following the Builder Guide's lead-model plus companion pattern. Neither model decides outcomes.
+Argon receives the whole document in one request and produces a closed, executable model: states, settings, roles and rules, with source quotes on the settings, roles and rules. When code finds a broken quote or reference, Argon repairs its own output in a linked follow-up interaction (`previous_interaction_id`). That keeps the earlier context linked instead of starting over. We pair it with `gemini-3.8-flash` for the low-latency question drafts, following the Builder Guide's lead-model plus companion pattern. Neither model decides outcomes.
 
 ## Limits
 
