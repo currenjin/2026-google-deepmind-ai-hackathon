@@ -201,7 +201,8 @@ function viewVerify() {
   return `
     <section style="padding-top:8px">
       <h1 class="hero" style="margin-top:6px">Every rule points to a sentence in the source.</h1>
-      <div class="loop">${x.attempts.map(attemptRow).join('')}<div class="row faint" style="font-size:13px">${esc(when)} · source sha256 ${esc(short(x.source_hash))}</div></div>
+      <div class="loop">${x.attempts.map(attemptRow).join('')}<div class="row faint" style="font-size:13px">${esc(when)} · source sha256 ${esc(short(x.source_hash))}</div>
+        <div class="row faint" style="font-size:13px">Checks: every quote exists in the source · every state, role, setting and input reference resolves · values match their types. Failed checks go back to Gemini 4 Argon with the exact errors, up to 3 calls in total.</div></div>
     </section>
     <div class="cols">
       <section>
@@ -246,9 +247,11 @@ function bindVerify() {
 function defaultPeople(m) {
   const letters = 'ABCDEFG';
   const people = [];
-  const rel = Object.fromEntries((m.relations || []).map((r) => [r.id, true]));
+  const rels = m.relations || [];
+  if (!rels.length) return m.roles.map((r, i) => ({ id: letters[i], roles: [r.id], relations: {} }));
+  // With relations (e.g. "started the run"), A holds the first role plus every relation.
   const first = m.roles[0]?.id;
-  people.push({ id: 'A', roles: first ? [first] : [], relations: rel });
+  people.push({ id: 'A', roles: first ? [first] : [], relations: Object.fromEntries(rels.map((r) => [r.id, true])) });
   m.roles.forEach((r, i) => people.push({ id: letters[i + 1], roles: [r.id], relations: {} }));
   return people;
 }
@@ -343,7 +346,7 @@ const NOLABEL = { invalid_input: 'Input check', excluded_by_review: 'Your review
 
 function viewResult() {
   const r = S.last;
-  if (!r) return `<article class="result"><div class="empty">Choose who is acting, then press one of the document’s buttons.</div></article>`;
+  if (!r) return `<article class="result"><div class="empty">Pick who is acting, set the conditions, then press one of the document’s buttons.</div><p class="faint" style="font-size:15px;margin-top:10px">Each result is decided by code from the reviewed rules and cites the source line. Use Reset path to start a new scenario from the same starting state.</p></article>`;
   const tag = r.label ? `<span class="tag ${TAGCLASS[r.classification]}">${esc(r.label)}</span>` : `<span class="tag scope">${NOLABEL[r.classification] || 'Note'}</span>`;
   const quotes = r.evidence.slice(0, 3).map((e) => `<p class="quote">${esc(e.quote)}</p><div class="cite">document line ${esc(e.line)} · quote verified</div>`).join('');
   let draft = '';
@@ -534,6 +537,8 @@ document.querySelectorAll('#steps button').forEach((b) => b.addEventListener('cl
 (async () => {
   try {
     S.samples = await (await fetch('/api/samples')).json();
+    const gh = S.samples.find((x) => x.id === 'github');
+    if (gh && !S.doc.text) await setDoc(gh.text, gh);
   } catch { S.samples = []; }
   render();
 })();

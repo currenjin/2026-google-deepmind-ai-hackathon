@@ -97,6 +97,19 @@ export function evaluate({ model, included, state, settings, actor, action, inpu
     return { classification: 'unsupported', label: LABELS.unsupported, state: before, changed: false, evidence: [] };
   }
 
+  // An input the rules for this action compare against must be filled in; otherwise every
+  // comparison is false and the replay would wrongly report a document gap.
+  const needed = new Set([...(model.rules || []), ...(model.prohibitions || [])]
+    .filter((r) => r.action === action && keep(r))
+    .flatMap((r) => (r.when || []).filter((c) => c.input !== undefined).map((c) => c.input)));
+  for (const id of needed) {
+    const v = inputs[id];
+    if (v === undefined || v === null || v === '' || Number.isNaN(v)) {
+      const def = (model.inputs || []).find((i) => i.id === id);
+      return { classification: 'invalid_input', label: null, message: `Enter ${def?.label || id} first. The rules for this action depend on it.`, state: { ...state }, changed: false, evidence: [] };
+    }
+  }
+
   const inputError = validateInputs(model, inputs);
   if (inputError) {
     return { classification: 'invalid_input', label: null, message: inputError, state: before, changed: false, evidence: [] };

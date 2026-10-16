@@ -141,3 +141,10 @@ test('R3 excluding a rule is a review state, not a document gap', () => {
   assert.equal(res.classification, 'excluded_by_review');
   assert.equal(res.label, null);
 });
+
+test('empty required input is an input check, not a document gap', () => {
+  const model = syntheticModels.contradiction;
+  const res = evaluate({ model, state: initialState(model, { status: 'pending' }), settings: {}, actor: { roles: ['reviewer'], relations: {} }, action: 'approve', inputs: {} });
+  assert.equal(res.classification, 'invalid_input');
+  assert.equal(res.state.status, 'pending');
+});
