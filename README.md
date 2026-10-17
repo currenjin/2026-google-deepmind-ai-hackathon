@@ -2,6 +2,8 @@
 
 Walk a spec's documented paths. Stop where the document can't decide.
 
+![Spec Gap Replay: the replay stops at Needs decision when two rules in the document disagree](docs/images/replay-needs-decision.png)
+
 Developers get a PRD or policy document and start building. The normal path is clear. The edge cases are not: the answers can be scattered, missing or in conflict. Spec Gap Replay turns the document into a workflow you can click through, and it never fills a gap with a guess.
 
 **Live app:** ~~https://spec-gap-replay-1088859591404.asia-northeast3.run.app~~ (link expired: the hackathon GCP project was deleted after the event)
