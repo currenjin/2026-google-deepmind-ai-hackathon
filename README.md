@@ -4,7 +4,7 @@ Walk a spec's documented paths. Stop where the document can't decide.
 
 Developers get a PRD or policy document and start building. The normal path is clear. The edge cases are not: the answers can be scattered, missing or in conflict. Spec Gap Replay turns the document into a workflow you can click through, and it never fills a gap with a guess.
 
-**Live app:** https://spec-gap-replay-1088859591404.asia-northeast3.run.app
+**Live app:** ~~https://spec-gap-replay-1088859591404.asia-northeast3.run.app~~ (link expired: the hackathon GCP project was deleted after the event)
 
 **Demo video:** https://youtu.be/auwObIfZll0
 
